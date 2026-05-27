@@ -1,0 +1,143 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION || 'ap-southeast-1' }}
+  CFN_STACK_NAME: ${{ vars.CFN_STACK_NAME || 'team14-budgetbot-iac' }}
+  RESOURCE_NAME_PREFIX: ${{ vars.RESOURCE_NAME_PREFIX || 'team14-budgetbot-cfn' }}
+  OWNER_TAG: ${{ vars.OWNER_TAG || 'Team14' }}
+  ENVIRONMENT_TAG: ${{ vars.ENVIRONMENT_TAG || 'hackathon' }}
+  LAMBDA_ARTIFACT_BUCKET: ${{ secrets.LAMBDA_ARTIFACT_BUCKET }}
+  LAMBDA_ARTIFACT_PREFIX: ${{ vars.LAMBDA_ARTIFACT_PREFIX || 'lambda-artifacts' }}
+  BEDROCK_MODEL_ARN: ${{ vars.BEDROCK_MODEL_ARN || 'arn:aws:bedrock:ap-southeast-1:325137989598:inference-profile/apac.amazon.nova-micro-v1:0' }}
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy BudgetBot
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest -q
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Check required AWS variables
+        run: |
+          if [ -z "${LAMBDA_ARTIFACT_BUCKET}" ]; then
+            echo "::error::Missing GitHub secret LAMBDA_ARTIFACT_BUCKET."
+            exit 1
+          fi
+          aws s3api head-bucket --bucket "${LAMBDA_ARTIFACT_BUCKET}"
+
+      - name: Build Lambda package
+        run: |
+          rm -rf build
+          mkdir -p build/lambda
+          python -m pip install -r requirements.txt -t build/lambda
+          rsync -a src build/lambda/
+          cd build/lambda
+          zip -qr ../budgetbot-lambda.zip .
+
+      - name: Upload Lambda artifact
+        run: |
+          LAMBDA_CODE_S3_KEY="${LAMBDA_ARTIFACT_PREFIX}/${GITHUB_SHA}/budgetbot-lambda.zip"
+          aws s3 cp build/budgetbot-lambda.zip "s3://${LAMBDA_ARTIFACT_BUCKET}/${LAMBDA_CODE_S3_KEY}"
+          echo "LAMBDA_CODE_S3_KEY=${LAMBDA_CODE_S3_KEY}" >> "${GITHUB_ENV}"
+
+      - name: Deploy CloudFormation stack
+        run: |
+          aws cloudformation deploy \
+            --region "${AWS_REGION}" \
+            --stack-name "${CFN_STACK_NAME}" \
+            --template-file infrastructure/cloudformation.yaml \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --no-fail-on-empty-changeset \
+            --parameter-overrides \
+              ResourceNamePrefix="${RESOURCE_NAME_PREFIX}" \
+              OwnerTag="${OWNER_TAG}" \
+              EnvironmentTag="${ENVIRONMENT_TAG}" \
+              DeployApplication=true \
+              LambdaCodeS3Bucket="${LAMBDA_ARTIFACT_BUCKET}" \
+              LambdaCodeS3Key="${LAMBDA_CODE_S3_KEY}" \
+              BedrockModelArn="${BEDROCK_MODEL_ARN}"
+
+      - name: Read stack outputs
+        run: |
+          FRONTEND_BUCKET="$(aws cloudformation describe-stacks \
+            --region "${AWS_REGION}" \
+            --stack-name "${CFN_STACK_NAME}" \
+            --query "Stacks[0].Outputs[?OutputKey=='FrontendBucketName'].OutputValue | [0]" \
+            --output text)"
+          API_ENDPOINT="$(aws cloudformation describe-stacks \
+            --region "${AWS_REGION}" \
+            --stack-name "${CFN_STACK_NAME}" \
+            --query "Stacks[0].Outputs[?OutputKey=='ApiEndpoint'].OutputValue | [0]" \
+            --output text)"
+          CLOUDFRONT_DOMAIN="$(aws cloudformation describe-stacks \
+            --region "${AWS_REGION}" \
+            --stack-name "${CFN_STACK_NAME}" \
+            --query "Stacks[0].Outputs[?OutputKey=='CloudFrontDomainName'].OutputValue | [0]" \
+            --output text)"
+          DISTRIBUTION_ID="$(aws cloudformation describe-stack-resource \
+            --region "${AWS_REGION}" \
+            --stack-name "${CFN_STACK_NAME}" \
+            --logical-resource-id FrontendDistribution \
+            --query "StackResourceDetail.PhysicalResourceId" \
+            --output text)"
+
+          echo "FRONTEND_BUCKET=${FRONTEND_BUCKET}" >> "${GITHUB_ENV}"
+          echo "API_ENDPOINT=${API_ENDPOINT}" >> "${GITHUB_ENV}"
+          echo "CLOUDFRONT_DOMAIN=${CLOUDFRONT_DOMAIN}" >> "${GITHUB_ENV}"
+          echo "DISTRIBUTION_ID=${DISTRIBUTION_ID}" >> "${GITHUB_ENV}"
+
+      - name: Deploy static frontend
+        run: |
+          rm -rf build/frontend
+          mkdir -p build/frontend
+          rsync -a frontend/ build/frontend/
+          perl -0pi -e "s|const DEFAULT_API_BASE = '[^']*';|const DEFAULT_API_BASE = '${API_ENDPOINT}';|" build/frontend/index.html
+
+          aws s3 sync build/frontend/ "s3://${FRONTEND_BUCKET}/" --delete
+          aws cloudfront create-invalidation \
+            --distribution-id "${DISTRIBUTION_ID}" \
+            --paths "/*"
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "### BudgetBot deployment"
+            echo ""
+            echo "- Stack: ${CFN_STACK_NAME}"
+            echo "- Region: ${AWS_REGION}"
+            echo "- API endpoint: ${API_ENDPOINT}"
+            echo "- Frontend URL: https://${CLOUDFRONT_DOMAIN}"
+            echo "- Lambda artifact: s3://${LAMBDA_ARTIFACT_BUCKET}/${LAMBDA_CODE_S3_KEY}"
+          } >> "${GITHUB_STEP_SUMMARY}"

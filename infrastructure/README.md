@@ -69,6 +69,29 @@ aws cloudformation describe-stacks \
   --query 'Stacks[0].Outputs'
 ```
 
+## GitHub Actions Deployment
+
+The repository includes `.github/workflows/build-and-deploy.yml`.
+It runs on every push to `main` and can also be started manually from the GitHub Actions tab.
+
+Required GitHub secrets:
+
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `LAMBDA_ARTIFACT_BUCKET` — an existing S3 bucket used only to store Lambda zip artifacts.
+
+Optional GitHub variables:
+
+- `AWS_REGION` — defaults to `ap-southeast-1`
+- `CFN_STACK_NAME` — defaults to `team14-budgetbot-iac`
+- `RESOURCE_NAME_PREFIX` — defaults to `team14-budgetbot-cfn`
+- `OWNER_TAG` — defaults to `Team14`
+- `ENVIRONMENT_TAG` — defaults to `hackathon`
+- `LAMBDA_ARTIFACT_PREFIX` — defaults to `lambda-artifacts`
+- `BEDROCK_MODEL_ARN` — defaults to the Nova Micro inference profile used by the template.
+
+The workflow builds the Lambda package from `requirements.txt` and `src/`, uploads it to the artifact bucket, deploys CloudFormation with `DeployApplication=true`, syncs `frontend/` to the frontend S3 bucket output, and invalidates CloudFront.
+
 ## Teardown
 
 Empty S3 buckets first, then delete the stack:
