@@ -1,7 +1,11 @@
 """Endpoint business logic for BudgetBot."""
 import csv
 import io
+import logging
 from typing import Optional
+
+
+logger = logging.getLogger(__name__)
 
 
 def _parse_csv(data: bytes) -> list:
@@ -51,6 +55,12 @@ def handle_upload(
     for row in rows:
         cat_result = ai_client.categorize(
             description=row["description"], amount=row["amount"], date=row["date"]
+        )
+        logger.warning(
+            "bedrock_classification_result user_id=%s category=%s confidence=%s",
+            user_id,
+            cat_result["category"],
+            cat_result["confidence"],
         )
         txn = {
             "date": row["date"],

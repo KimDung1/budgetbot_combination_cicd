@@ -1,4 +1,5 @@
 """FastAPI app for BudgetBot. Runtime-agnostic."""
+import logging
 from pathlib import Path
 from typing import Optional
 
@@ -10,6 +11,8 @@ from src.config import config
 from src.adapters import factory
 from src import handlers
 
+
+logging.basicConfig(level=getattr(logging, config.log_level.upper(), logging.INFO))
 
 app = FastAPI(title="BudgetBot — W7 Capstone Starter")
 

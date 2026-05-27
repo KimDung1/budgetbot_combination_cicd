@@ -1,4 +1,5 @@
 fastapi>=0.110
+mangum>=0.17
 uvicorn[standard]>=0.27
 python-dotenv>=1.0
 python-multipart>=0.0.9

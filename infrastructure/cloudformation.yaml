@@ -36,8 +36,8 @@ Parameters:
     Description: S3 key for Lambda zip artifact. Required when DeployApplication=true.
   BedrockModelArn:
     Type: String
-    Default: arn:aws:bedrock:ap-southeast-1::foundation-model/anthropic.claude-3-haiku-20240307-v1:0
-    Description: Foundation model ARN allowed for BudgetBot Lambda.
+    Default: arn:aws:bedrock:ap-southeast-1:325137989598:inference-profile/apac.amazon.nova-micro-v1:0
+    Description: Foundation model or inference profile ARN allowed for BudgetBot Lambda.
 
 Conditions:
   ShouldDeployApplication: !Equals [!Ref DeployApplication, "true"]
@@ -551,7 +551,10 @@ Resources:
                 Effect: Allow
                 Action:
                   - bedrock:InvokeModel
-                Resource: !Ref BedrockModelArn
+                Resource:
+                  - !Ref BedrockModelArn
+                  - arn:aws:bedrock:*::foundation-model/amazon.nova-micro-v1:0
+                  - !Sub arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-3-haiku-20240307-v1:0
               - Sid: WriteLambdaLogs
                 Effect: Allow
                 Action:
@@ -597,7 +600,7 @@ Resources:
     Properties:
       FunctionName: !Sub ${ResourceNamePrefix}-backend
       Runtime: python3.12
-      Handler: app.handler
+      Handler: src.lambda_handler.handler
       Role: !GetAtt LambdaExecutionRole.Arn
       Timeout: 30
       MemorySize: 512
@@ -607,13 +610,14 @@ Resources:
       Environment:
         Variables:
           APP_NAME: BudgetBot
-          AWS_REGION: !Ref AWS::Region
           AI_BACKEND: bedrock
+          AI_MODEL_ID: apac.amazon.nova-micro-v1:0
           STORAGE_BACKEND: s3
           USERSTORE_BACKEND: dynamodb
-          S3_BUCKET: !Ref RawStatementsBucket
-          DDB_TABLE: !Ref TransactionsTable
-          BEDROCK_MODEL_ID: anthropic.claude-3-haiku-20240307-v1:0
+          STORAGE_BUCKET: !Ref RawStatementsBucket
+          USERSTORE_TABLE: !Ref TransactionsTable
+          SERVE_FRONTEND: "false"
+          CORS_ORIGINS: "*"
           CLOUDWATCH_NAMESPACE: BudgetBot/Team14
       VpcConfig:
         SecurityGroupIds:

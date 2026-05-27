@@ -257,7 +257,8 @@
 <div class="toasts" id="toasts"></div>
 
 <script>
-const API_BASE = (window.API_BASE || new URLSearchParams(location.search).get('api') || '').replace(/\/$/, '');
+const DEFAULT_API_BASE = 'https://mlhwir8gc5.execute-api.ap-southeast-1.amazonaws.com';
+const API_BASE = (window.API_BASE || new URLSearchParams(location.search).get('api') || DEFAULT_API_BASE).replace(/\/$/, '');
 const USER_ID = (new URLSearchParams(location.search).get('user') || 'test-user-001');
 
 function $(id) { return document.getElementById(id); }

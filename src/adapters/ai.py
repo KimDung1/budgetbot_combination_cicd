@@ -58,12 +58,30 @@ class BedrockAI:
             amount=amount,
             date=date,
         )
-        resp = self.runtime.converse(
+        if "nova" in self.model_id:
+            body = {
+                "schemaVersion": "messages-v1",
+                "messages": [{"role": "user", "content": [{"text": prompt}]}],
+                "inferenceConfig": {"maxTokens": 100, "temperature": 0.0},
+            }
+        else:
+            body = {
+                "anthropic_version": "bedrock-2023-05-31",
+                "max_tokens": 100,
+                "temperature": 0.0,
+                "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}],
+            }
+        resp = self.runtime.invoke_model(
             modelId=self.model_id,
-            messages=[{"role": "user", "content": [{"text": prompt}]}],
-            inferenceConfig={"maxTokens": 100, "temperature": 0.0},
+            body=json.dumps(body),
+            contentType="application/json",
+            accept="application/json",
         )
-        text = resp["output"]["message"]["content"][0]["text"]
+        payload = json.loads(resp["body"].read())
+        if "nova" in self.model_id:
+            text = payload["output"]["message"]["content"][0]["text"]
+        else:
+            text = payload["content"][0]["text"]
         return _parse_json_response(text)
 
 
