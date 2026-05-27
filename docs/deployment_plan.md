@@ -73,7 +73,7 @@ Owner: Project Lead
 - [ ] Xác nhận service cho đủ 7 mandatory capabilities.
 - [ ] Chia owner cuối cùng.
 - [ ] Vẽ architecture diagram bản đầu.
-- [ ] Chốt optional capability: Full Observability.
+- [x] Chốt optional capability: Full Observability.
 
 ### 10:30-11:00 — Safety Check
 
@@ -247,4 +247,3 @@ Sau demo:
 8. Chụp final Cost Explorer screenshot.
 9. Hoàn thành `docs/teardown_confirmation.md`.
 10. Commit teardown confirmation.
-

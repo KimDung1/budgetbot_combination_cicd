@@ -18,6 +18,8 @@ Target users: students, young professionals, and small business owners who need 
 
 Add final architecture diagram here: `docs/architecture.png`.
 
+Chosen optional capability: **Full Observability** with CloudWatch dashboard, custom metrics, one alarm in `OK` or `ALARM`, and one saved Logs Insights query.
+
 | Capability | Service | Rationale |
 |---|---|---|
 | User Interface | S3 + CloudFront | Public HTTPS static frontend |
@@ -27,6 +29,7 @@ Add final architecture diagram here: `docs/architecture.png`.
 | Object Storage | S3 | Raw bank statement storage |
 | Network Foundation | VPC endpoints / no public DB | Avoid NAT and keep AWS service access private where used |
 | Identity & Access | IAM least privilege | Scoped Lambda execution role |
+| Optional: Full Observability | CloudWatch dashboard + custom metrics + alarm + Logs Insights | Proves the demo path is observable, debuggable, and measurable |
 
 ## 4. Cost Discipline
 
@@ -52,8 +55,14 @@ Top cost drivers:
 
 ## 6. Monitoring
 
+Chosen optional capability: **Full Observability**.
+
 - CloudWatch dashboard:
-- Custom metric:
+- Custom metrics:
+  - `UploadSucceeded`
+  - `TransactionsCategorized`
+  - `LowConfidenceTransactions`
+  - `BedrockLatencyMs`
 - Alarm:
 - Logs Insights query:
 
@@ -96,4 +105,3 @@ Write around 200 words after the build. Include one failure case, what changed, 
 5. Empty and delete S3 buckets.
 6. Delete CloudWatch alarms, dashboards, and log groups.
 7. Delete VPC endpoints and VPC resources if created.
-

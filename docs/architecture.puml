@@ -1,0 +1,98 @@
+@startuml Team14_BudgetBot_AWS_Serverless_Architecture
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam defaultFontName Arial
+skinparam defaultTextAlignment center
+skinparam ArrowColor #1F2937
+skinparam RectangleBorderColor #334155
+skinparam RectangleFontColor #0F172A
+skinparam packageBorderColor #2563EB
+skinparam packageFontColor #0F172A
+
+title Team 14 BudgetBot - AWS Serverless Architecture
+caption AI Money Coach: upload bank statements, classify transactions with Amazon Bedrock, persist spending insights, and monitor the demo path.
+
+actor "Users" as users
+
+cloud "AWS Managed Edge" as edge {
+  component "Amazon CloudFront\nPublic HTTPS URL" as cloudfront
+  database "Amazon S3\nStatic frontend bucket\nPrivate + OAC\nBlock Public Access" as frontend_s3
+}
+
+cloud "AWS Region: ap-southeast-1" as region {
+  component "Amazon API Gateway\nHTTP API\nPOST /upload\nGET /summary\nGET /transactions\nGET /health" as api
+
+  package "Customer VPC 10.0.0.0/16" as vpc {
+    package "Availability Zone A" as aza {
+      rectangle "Public subnet\n10.0.1.0/24\nReserved for future ALB/bastion\nNot used by Lambda path" as public_a
+      rectangle "Private subnet\n10.0.2.0/24" as private_a
+    }
+
+    package "Availability Zone B" as azb {
+      rectangle "Public subnet\n10.0.101.0/24\nReserved for future ALB/bastion\nNot used by Lambda path" as public_b
+      rectangle "Private subnet\n10.0.102.0/24" as private_b
+    }
+
+    component "AWS Lambda\nFastAPI backend\nSingle function configured\nacross private subnets AZ A and AZ B\nNo public IP" as lambda
+
+    rectangle "VPC Endpoints\n\nS3 Gateway Endpoint\nDynamoDB Gateway Endpoint\nBedrock Runtime Interface Endpoint\n\nNo NAT Gateway\nNo private 0.0.0.0/0 internet route" as endpoints
+  }
+
+  database "Amazon S3\nRaw statements bucket\nPrivate\nBlock Public Access\nEncryption enabled" as raw_s3
+
+  component "Amazon Bedrock Runtime\nClaude 3 Haiku\nTransaction classifier\nInvokeModel API" as bedrock
+
+  database "Amazon DynamoDB\nbudgetbot-transactions\nPK: user_id\nSK: TXN#date#id\nManaged regional NoSQL service" as dynamodb
+
+  component "Amazon CloudWatch\nLogs, Metrics, Dashboard, Alarm\n\nCustom metrics:\nUploadSucceeded\nTransactionsCategorized\nLowConfidenceTransactions\nBedrockLatencyMs" as cloudwatch
+
+  component "AWS IAM\nLambda execution role\nLeast privilege only" as iam
+}
+
+users --> cloudfront : 1. Open public HTTPS URL
+cloudfront --> frontend_s3 : 2. Serve static frontend via OAC
+users --> api : 3. Browser HTTPS API call
+api --> lambda : 4. Invoke backend
+
+lambda --> endpoints : Private AWS service access
+endpoints --> raw_s3 : 5. Store uploaded raw CSV
+endpoints --> bedrock : 6. Send descriptions for AI classification
+bedrock --> lambda : 7. Return JSON category + confidence
+endpoints --> dynamodb : 8. Write categorized transactions
+lambda --> dynamodb : 9. Query summaries and transactions
+lambda --> cloudwatch : 10. Write logs and custom metrics
+iam ..> lambda : 11. Execution role
+iam ..> raw_s3 : s3:PutObject/GetObject
+iam ..> dynamodb : dynamodb:PutItem/Query
+iam ..> bedrock : bedrock:InvokeModel
+iam ..> cloudwatch : logs:* scoped actions\ncloudwatch:PutMetricData
+
+note bottom of vpc
+  Network foundation:
+  Lambda runs in private subnets across two AZs.
+  S3 and DynamoDB use Gateway Endpoints.
+  Bedrock Runtime uses an Interface Endpoint.
+  No NAT Gateway is required for the demo path.
+end note
+
+note bottom of region
+  Managed AWS services outside the customer VPC:
+  CloudFront, API Gateway, S3, DynamoDB, Bedrock, and CloudWatch.
+  DynamoDB is not deployed inside the VPC, but access is private via Gateway Endpoint and IAM.
+end note
+
+legend right
+  |= Capability |= Service |
+  | #1 User Interface | CloudFront, S3 frontend, API Gateway |
+  | #2 Application Compute | AWS Lambda FastAPI |
+  | #3 AI / ML Feature | Amazon Bedrock Runtime |
+  | #4 Data Persistence | Amazon DynamoDB |
+  | #5 Object Storage | Amazon S3 raw statements |
+  | #6 Network Foundation | VPC, private subnets, VPC endpoints |
+  | #7 Identity & Access | IAM least-privilege execution role |
+  | Optional #8 Observability | CloudWatch dashboard, metrics, alarm |
+endlegend
+
+@enduml
