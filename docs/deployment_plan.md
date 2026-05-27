@@ -1,22 +1,22 @@
-# Team 14 Deployment Plan — BudgetBot
+# Kế Hoạch Triển Khai Team 14 — BudgetBot
 
-## Goal
+## Mục Tiêu
 
-Ship BudgetBot as a public HTTPS AI SaaS demo for W7.
+Triển khai BudgetBot thành một AI SaaS demo có public HTTPS URL cho W7.
 
 Happy path:
 
-1. User opens CloudFront URL.
-2. User uploads a bank statement CSV.
-3. Backend stores the raw CSV in S3.
-4. Lambda calls Amazon Bedrock to classify transactions.
-5. Categorized transactions are saved in DynamoDB.
-6. User views spending summary and transaction list after refresh.
-7. Team shows CloudWatch monitoring and Cost Explorer evidence.
+1. Người dùng mở CloudFront URL.
+2. Người dùng upload file sao kê ngân hàng dạng CSV.
+3. Backend lưu file CSV gốc vào S3.
+4. Lambda gọi Amazon Bedrock để phân loại giao dịch.
+5. Các giao dịch đã phân loại được lưu vào DynamoDB.
+6. Người dùng xem tổng quan chi tiêu và danh sách giao dịch sau khi refresh.
+7. Team trình bày CloudWatch monitoring và Cost Explorer evidence.
 
-## Final Architecture
+## Kiến Trúc Cuối
 
-| W7 Capability | Service | Owner |
+| Năng lực W7 | Service | Người phụ trách |
 |---|---|---|
 | User Interface | S3 static frontend + CloudFront HTTPS | Infra owner |
 | API Entry | API Gateway HTTP API | Backend owner |
@@ -24,56 +24,56 @@ Happy path:
 | AI / ML Feature | Bedrock InvokeModel | AI owner |
 | Data Persistence | DynamoDB | Data owner |
 | Object Storage | S3 upload bucket | Infra owner |
-| Network Foundation | No public DB, VPC endpoints where used, no NAT Gateway | Infra owner |
+| Network Foundation | Không public DB, dùng VPC endpoints nếu cần, không dùng NAT Gateway | Infra owner |
 | Identity & Access | IAM least-privilege Lambda role | Infra + Backend owners |
 | Optional Capability | CloudWatch dashboard + custom metrics + alarm + Logs Insights query | Observability owner |
 
-## Team Roles
+## Chia Vai Team
 
-| Role | Main Responsibility | Deliverables |
+| Vai trò | Trách nhiệm chính | Deliverables |
 |---|---|---|
-| Project Lead / Presenter | Keep scope tight, coordinate checkpoints, own final story | Demo script, slide flow, QnA prep |
+| Project Lead / Presenter | Giữ scope gọn, điều phối checkpoint, nắm câu chuyện cuối | Demo script, flow slide, QnA prep |
 | Infra Owner | AWS resources, IAM, S3, CloudFront, API Gateway, tags, budget safety | Public URL, IAM policies, tagged resources |
-| Backend + AI Owner | Lambda app, Bedrock prompt, classification API, error logs | Working upload/classify/summary endpoints |
-| Data Owner | DynamoDB table design, transaction persistence, review queue | Data model, persistence proof, sample records |
+| Backend + AI Owner | Lambda app, Bedrock prompt, classification API, error logs | Endpoint upload/classify/summary chạy được |
+| Data Owner | DynamoDB table design, transaction persistence, review queue | Data model, bằng chứng persistence, sample records |
 | Evidence + Cost Owner | Evidence Pack, screenshots, Cost Explorer, teardown checklist | `docs/W7_evidence.md`, cost screenshots, teardown doc |
-| Observability Owner | CloudWatch dashboard, custom metric, alarm, Log Insights | Monitoring screenshots and alarm proof |
+| Observability Owner | CloudWatch dashboard, custom metric, alarm, Log Insights | Monitoring screenshots và alarm proof |
 
-If the team has fewer people, combine roles in this order:
+Nếu team ít người, gộp vai theo thứ tự:
 
 1. Project Lead + Evidence
 2. Infra + Observability
 3. Backend + AI + Data
 
-## Day 0 — Pre-flight Checklist
+## Day 0 — Checklist Pre-flight
 
-Complete before deploying paid resources.
+Hoàn thành trước khi deploy bất kỳ resource tốn tiền nào.
 
-- [ ] AWS root MFA enabled.
-- [ ] AWS Budget alert set to `$80`.
-- [ ] SNS budget alert email confirmed.
-- [ ] Cost Anomaly Detection enabled.
-- [ ] Bedrock model access enabled for chosen model.
-- [ ] Team tags agreed:
+- [ ] AWS root MFA đã bật.
+- [ ] AWS Budget alert đặt ở mức `$80`.
+- [ ] Email SNS của budget alert đã confirm.
+- [ ] Cost Anomaly Detection đã bật.
+- [ ] Bedrock model access đã bật cho model nhóm chọn.
+- [ ] Thống nhất tags:
   - `Project=W7Capstone`
   - `Team=G14`
   - `Owner=<member-name>`
   - `Environment=hackathon`
-- [ ] GitHub repo public and accessible.
-- [ ] `docs/W7_evidence.md` created.
-- [ ] Architecture draft created.
+- [ ] GitHub repo public và truy cập được.
+- [ ] Đã tạo `docs/W7_evidence.md`.
+- [ ] Đã có bản nháp architecture diagram.
 
-## Day 1 Plan — Infrastructure + Happy Path
+## Day 1 — Hạ Tầng + Happy Path
 
-### 09:00-10:30 — Architecture Lock
+### 09:00-10:30 — Chốt Kiến Trúc
 
 Owner: Project Lead
 
-- [ ] Confirm BudgetBot scope.
-- [ ] Confirm services for all 7 mandatory capabilities.
-- [ ] Assign final owners.
-- [ ] Draw first architecture diagram.
-- [ ] Decide optional capability: Full Observability.
+- [ ] Xác nhận scope BudgetBot.
+- [ ] Xác nhận service cho đủ 7 mandatory capabilities.
+- [ ] Chia owner cuối cùng.
+- [ ] Vẽ architecture diagram bản đầu.
+- [ ] Chốt optional capability: Full Observability.
 
 ### 10:30-11:00 — Safety Check
 
@@ -85,17 +85,17 @@ Owner: Evidence + Cost Owner
 - [ ] Show Bedrock access.
 - [ ] Confirm tagging convention.
 
-### 11:00-13:00 — Foundation Resources
+### 11:00-13:00 — Tạo Foundation Resources
 
 Owner: Infra Owner
 
-- [ ] Create S3 frontend bucket.
-- [ ] Create S3 upload bucket.
-- [ ] Enable S3 Block Public Access.
-- [ ] Enable encryption.
-- [ ] Create DynamoDB table.
-- [ ] Create Lambda execution role with least privilege.
-- [ ] Apply tags to all resources.
+- [ ] Tạo S3 frontend bucket.
+- [ ] Tạo S3 upload bucket.
+- [ ] Bật S3 Block Public Access.
+- [ ] Bật encryption.
+- [ ] Tạo DynamoDB table.
+- [ ] Tạo Lambda execution role với least privilege.
+- [ ] Gắn tags cho toàn bộ resources.
 
 ### 14:00-16:30 — Core Services
 
@@ -103,129 +103,129 @@ Owners: Infra Owner + Backend Owner + Data Owner
 
 - [ ] Deploy Lambda.
 - [ ] Configure API Gateway HTTP API.
-- [ ] Wire frontend API base URL.
+- [ ] Cấu hình frontend API base URL.
 - [ ] Test `/health`.
 - [ ] Test DynamoDB write/read.
 - [ ] Test S3 upload.
-- [ ] Test one Bedrock InvokeModel call from Lambda.
+- [ ] Test một Bedrock InvokeModel call từ Lambda.
 
-### 16:30-17:00 — Day 1 Close
-
-Owner: Project Lead
-
-- [ ] Public URL loads.
-- [ ] API returns health.
-- [ ] One transaction can be written and read.
-- [ ] Bedrock response appears in CloudWatch logs.
-- [ ] Take Day 1 Cost Explorer screenshot.
-- [ ] Commit current code and docs.
-
-## Day 2 Plan — AI Feature + Observability + Evidence
-
-### 09:00-09:30 — Scope Review
+### 16:30-17:00 — Chốt Day 1
 
 Owner: Project Lead
 
-- [ ] List what works.
-- [ ] Cut non-essential work.
-- [ ] Confirm final demo path.
+- [ ] Public URL load được.
+- [ ] API trả health.
+- [ ] Ghi và đọc được một transaction.
+- [ ] Bedrock response xuất hiện trong CloudWatch logs.
+- [ ] Chụp Day 1 Cost Explorer screenshot.
+- [ ] Commit code và docs hiện tại.
 
-### 09:30-12:00 — AI Integration
+## Day 2 — AI Feature + Observability + Evidence
+
+### 09:00-09:30 — Review Scope
+
+Owner: Project Lead
+
+- [ ] Liệt kê cái đã chạy.
+- [ ] Cắt những phần không cần thiết.
+- [ ] Xác nhận demo path cuối.
+
+### 09:30-12:00 — Tích Hợp AI
 
 Owner: Backend + AI Owner
 
-- [ ] Replace local classifier with Bedrock path for deployed environment.
-- [ ] Use JSON-only prompt response.
-- [ ] Add confidence output.
-- [ ] Add low-confidence review queue.
-- [ ] Batch classify transactions where practical.
-- [ ] Test with `sample_data/bank_statement_q2_2026.csv`.
+- [ ] Thay local classifier bằng Bedrock path cho deployed environment.
+- [ ] Dùng prompt bắt model trả JSON-only.
+- [ ] Thêm confidence output.
+- [ ] Thêm low-confidence review queue.
+- [ ] Batch classify transactions nếu kịp.
+- [ ] Test bằng `sample_data/bank_statement_q2_2026.csv`.
 
-### 12:00-13:00 — Data And Summary
+### 12:00-13:00 — Data Và Summary
 
 Owner: Data Owner
 
-- [ ] Store categorized transactions in DynamoDB.
-- [ ] Query by `user_id` and month.
-- [ ] Return summary by category.
-- [ ] Confirm data persists after browser refresh.
+- [ ] Lưu categorized transactions vào DynamoDB.
+- [ ] Query theo `user_id` và month.
+- [ ] Trả summary theo category.
+- [ ] Xác nhận data vẫn còn sau khi refresh browser.
 
 ### 13:00-14:30 — Optional Capability: Full Observability
 
 Owner: Observability Owner
 
-- [ ] Add custom metric `UploadSucceeded`.
-- [ ] Add custom metric `TransactionsCategorized`.
-- [ ] Add custom metric `LowConfidenceTransactions`.
-- [ ] Create CloudWatch dashboard.
-- [ ] Create alarm in `OK` or `ALARM` state.
-- [ ] Save Logs Insights query.
+- [ ] Thêm custom metric `UploadSucceeded`.
+- [ ] Thêm custom metric `TransactionsCategorized`.
+- [ ] Thêm custom metric `LowConfidenceTransactions`.
+- [ ] Tạo CloudWatch dashboard.
+- [ ] Tạo alarm ở trạng thái `OK` hoặc `ALARM`.
+- [ ] Lưu Logs Insights query.
 
 ### 14:30-15:30 — Evidence Pack
 
 Owner: Evidence + Cost Owner
 
-- [ ] Add architecture diagram.
-- [ ] Add service decision table.
-- [ ] Add IAM/security screenshots.
-- [ ] Add monitoring screenshots.
-- [ ] Add Day 2 Cost Explorer screenshot.
-- [ ] Complete two decision blocks:
+- [ ] Thêm architecture diagram.
+- [ ] Thêm service decision table.
+- [ ] Thêm IAM/security screenshots.
+- [ ] Thêm monitoring screenshots.
+- [ ] Thêm Day 2 Cost Explorer screenshot.
+- [ ] Hoàn thành 2 decision blocks:
   - DynamoDB over RDS.
   - Bedrock Haiku batch classification over alternatives.
 
-### 15:30-16:30 — Demo Rehearsal
+### 15:30-16:30 — Rehearse Demo
 
 Owner: Project Lead
 
-- [ ] Run demo twice end-to-end.
-- [ ] Test from phone hotspot or different network.
+- [ ] Chạy demo end-to-end 2 lần.
+- [ ] Test bằng phone hotspot hoặc mạng khác.
 - [ ] Record backup demo video.
-- [ ] Write 7-minute live demo script.
-- [ ] Prepare QnA answers.
+- [ ] Viết live demo script 7 phút.
+- [ ] Chuẩn bị câu trả lời QnA.
 
 ### 16:30-17:00 — Final Push
 
 Owner: All
 
 - [ ] Push repo.
-- [ ] Export slides to `docs/slides.pdf`.
-- [ ] Check public URL again.
+- [ ] Export slides thành `docs/slides.pdf`.
+- [ ] Check lại public URL.
 - [ ] Check total spend.
 - [ ] Confirm teardown plan.
 
 ## Demo Script
 
-1. Open public HTTPS URL.
+1. Mở public HTTPS URL.
 2. Upload sample bank statement.
 3. Show AI classification result.
 4. Show spending summary by category.
 5. Show low-confidence review queue.
-6. Refresh browser and show persisted transactions.
-7. Open CloudWatch dashboard.
-8. Open Cost Explorer screenshot/evidence.
+6. Refresh browser và show persisted transactions.
+7. Mở CloudWatch dashboard.
+8. Mở Cost Explorer screenshot/evidence.
 
 ## QnA Prep
 
-Every member must answer these without passing:
+Tất cả thành viên phải trả lời được các câu này, không chuyển câu hỏi cho người khác:
 
-- Why DynamoDB instead of RDS?
-- Why InvokeModel instead of Bedrock Knowledge Base?
-- Why Haiku instead of Sonnet?
-- Why API Gateway HTTP API instead of REST API?
-- What permissions does the Lambda execution role have?
-- Where is uploaded raw data stored?
-- How do we prevent public database exposure?
-- What is the biggest cost driver?
-- What happens when the model returns low confidence?
-- What is the teardown order?
+- Vì sao chọn DynamoDB thay vì RDS?
+- Vì sao chọn InvokeModel thay vì Bedrock Knowledge Base?
+- Vì sao chọn Haiku thay vì Sonnet?
+- Vì sao chọn API Gateway HTTP API thay vì REST API?
+- Lambda execution role có những quyền gì?
+- Raw uploaded data được lưu ở đâu?
+- Làm sao tránh public database exposure?
+- Cost driver lớn nhất là gì?
+- Nếu model trả low confidence thì xử lý thế nào?
+- Thứ tự teardown là gì?
 
 ## Cut List
 
-Do not build these unless all required items are already done:
+Không làm các phần này trừ khi toàn bộ mục bắt buộc đã xong:
 
 - Full Cognito signup flow.
-- New React frontend.
+- Frontend React mới.
 - Custom domain.
 - CI/CD pipeline.
 - Multi-region failover.
@@ -235,16 +235,16 @@ Do not build these unless all required items are already done:
 
 ## Teardown Plan
 
-After demo:
+Sau demo:
 
 1. Delete CloudFront distribution.
 2. Delete API Gateway.
 3. Delete Lambda function.
 4. Delete DynamoDB table.
-5. Empty and delete S3 buckets.
-6. Delete CloudWatch dashboard, alarms, and log groups.
-7. Delete VPC endpoints and VPC resources if created.
-8. Take final Cost Explorer screenshot.
-9. Complete `docs/teardown_confirmation.md`.
+5. Empty và delete S3 buckets.
+6. Delete CloudWatch dashboard, alarms, và log groups.
+7. Delete VPC endpoints và VPC resources nếu có tạo.
+8. Chụp final Cost Explorer screenshot.
+9. Hoàn thành `docs/teardown_confirmation.md`.
 10. Commit teardown confirmation.
 
