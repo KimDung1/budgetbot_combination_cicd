@@ -115,7 +115,7 @@ Team 14 selected **Optional #8 — Full Observability**.
 |---|---:|---|
 | AWS Budget alert | Done | `W7-Team14-HardCap-100USD`, $100 monthly COST budget |
 | SNS email confirmed | Done | `truclt0311@gmail.com`, subscription ARN confirmed |
-| Cost Anomaly Detection | Done | Monitor `Default-Services-Monitor`; TODO attach console screenshot |
+| Cost Anomaly Detection | Done | Monitor `Default-Services-Monitor`; attach `docs/evidence_screenshots/cost/03_cost_anomaly_detection.png` |
 | Tagging convention | Done | `Project=W7Capstone`, `Team=G14`, `Owner=Team14`, `Environment=hackathon` in CloudFormation resources |
 | Bedrock access | Done | Lambda health shows `ai=bedrock`; InvokeModel path works through deployed app |
 | Cost Explorer screenshots | TODO | Day 1 EOD, Day 2 EOD, Friday pre-demo |
@@ -124,12 +124,12 @@ Team 14 selected **Optional #8 — Full Observability**.
 
 | Screenshot | File To Add | Notes |
 |---|---|---|
-| Day 1 EOD Cost Explorer | `docs/cost_day1_eod.png` | Group by Service, filter by Team/G14 if tag activated |
-| Day 2 EOD Cost Explorer | `docs/cost_day2_eod.png` | Include total spend |
-| Friday pre-demo Cost Explorer | `docs/cost_friday_predemo.png` | Official total spend |
-| Budget alert | `docs/budget_alert.png` | Show $100 budget / $80 notification |
-| SNS confirmation | `docs/sns_confirmation.png` | Show confirmed email subscription |
-| Cost Anomaly Detection | `docs/cost_anomaly_detection.png` | Show active monitor/subscription |
+| Day 1 EOD Cost Explorer | `docs/evidence_screenshots/cost/04_cost_explorer_day1_eod.png` | Group by Service, filter by Team/G14 if tag activated |
+| Day 2 EOD Cost Explorer | `docs/evidence_screenshots/cost/05_cost_explorer_day2_eod.png` | Include total spend |
+| Friday pre-demo Cost Explorer | `docs/evidence_screenshots/cost/06_cost_explorer_friday_predemo.png` | Official total spend |
+| Budget alert | `docs/evidence_screenshots/cost/01_budget_alert.png` | Show $100 budget / $80 notification |
+| SNS confirmation | `docs/evidence_screenshots/cost/02_sns_confirmed.png` | Show confirmed email subscription |
+| Cost Anomaly Detection | `docs/evidence_screenshots/cost/03_cost_anomaly_detection.png` | Show active monitor/subscription |
 
 ### Expected Cost Drivers
 
@@ -151,7 +151,7 @@ AWS Cost Explorer returned `DataUnavailableException` during evidence drafting, 
 
 | Area | Implementation | Evidence |
 |---|---|---|
-| Root account safety | Root MFA required by W7 pre-flight | TODO attach MFA screenshot from AWS account owner |
+| Root account safety | Root MFA required by W7 pre-flight | Attach `docs/evidence_screenshots/security/01_root_mfa_enabled.png` from AWS account owner |
 | HTTPS public entry | Route 53 + CloudFront + ACM certificate | `budgetbot.topjob.id.vn`; ACM cert `arn:aws:acm:us-east-1:325137989598:certificate/5aece9cc-fd4b-4ebc-a6a5-24ab429455de`; CloudFront TLS minimum `TLSv1.2_2021` |
 | Private frontend bucket | S3 Block Public Access + CloudFront OAC | `team14-budgetbot-cfn-frontend-325137989598-ap-southeast-1`, OAC `E3U013UCJVZJJW` |
 | Raw statement storage | S3 Block Public Access + SSE-S3 | `team14-budgetbot-cfn-raw-325137989598-ap-southeast-1`, AES256 encryption |

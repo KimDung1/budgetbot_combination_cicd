@@ -115,7 +115,7 @@ Team 14 chọn **Optional #8 — Full Observability**.
 |---|---:|---|
 | AWS Budget alert | Xong | `W7-Team14-HardCap-100USD`, monthly COST budget $100 |
 | SNS email confirmed | Xong | `truclt0311@gmail.com`, subscription ARN đã confirm |
-| Cost Anomaly Detection | Xong | Monitor `Default-Services-Monitor`; TODO attach console screenshot |
+| Cost Anomaly Detection | Xong | Monitor `Default-Services-Monitor`; gắn `docs/evidence_screenshots/cost/03_cost_anomaly_detection.png` |
 | Tagging convention | Xong | `Project=W7Capstone`, `Team=G14`, `Owner=Team14`, `Environment=hackathon` trong CloudFormation resources |
 | Bedrock access | Xong | Lambda health trả `ai=bedrock`; InvokeModel chạy qua app đã deploy |
 | Cost Explorer screenshots | TODO | Day 1 EOD, Day 2 EOD, Friday pre-demo |
@@ -124,12 +124,12 @@ Team 14 chọn **Optional #8 — Full Observability**.
 
 | Screenshot | File cần thêm | Ghi chú |
 |---|---|---|
-| Day 1 EOD Cost Explorer | `docs/cost_day1_eod.png` | Group by Service, filter theo Team/G14 nếu cost allocation tag đã active |
-| Day 2 EOD Cost Explorer | `docs/cost_day2_eod.png` | Có tổng chi phí |
-| Friday pre-demo Cost Explorer | `docs/cost_friday_predemo.png` | Số chính thức trước demo |
-| Budget alert | `docs/budget_alert.png` | Show budget $100 / threshold $80 |
-| SNS confirmation | `docs/sns_confirmation.png` | Show email subscription confirmed |
-| Cost Anomaly Detection | `docs/cost_anomaly_detection.png` | Show monitor/subscription active |
+| Day 1 EOD Cost Explorer | `docs/evidence_screenshots/cost/04_cost_explorer_day1_eod.png` | Group by Service, filter theo Team/G14 nếu cost allocation tag đã active |
+| Day 2 EOD Cost Explorer | `docs/evidence_screenshots/cost/05_cost_explorer_day2_eod.png` | Có tổng chi phí |
+| Friday pre-demo Cost Explorer | `docs/evidence_screenshots/cost/06_cost_explorer_friday_predemo.png` | Số chính thức trước demo |
+| Budget alert | `docs/evidence_screenshots/cost/01_budget_alert.png` | Show budget $100 / threshold $80 |
+| SNS confirmation | `docs/evidence_screenshots/cost/02_sns_confirmed.png` | Show email subscription confirmed |
+| Cost Anomaly Detection | `docs/evidence_screenshots/cost/03_cost_anomaly_detection.png` | Show monitor/subscription active |
 
 ### Cost Drivers Dự Kiến
 
@@ -151,7 +151,7 @@ Khi soạn evidence, AWS Cost Explorer trả `DataUnavailableException`, thườ
 
 | Mảng | Triển khai | Bằng chứng |
 |---|---|---|
-| Root account safety | Root MFA là pre-flight requirement | TODO attach MFA screenshot từ account owner |
+| Root account safety | Root MFA là pre-flight requirement | Gắn `docs/evidence_screenshots/security/01_root_mfa_enabled.png` từ account owner |
 | HTTPS public entry | Route 53 + CloudFront + ACM certificate | `budgetbot.topjob.id.vn`; ACM cert `arn:aws:acm:us-east-1:325137989598:certificate/5aece9cc-fd4b-4ebc-a6a5-24ab429455de`; CloudFront TLS minimum `TLSv1.2_2021` |
 | Frontend bucket private | S3 Block Public Access + CloudFront OAC | `team14-budgetbot-cfn-frontend-325137989598-ap-southeast-1`, OAC `E3U013UCJVZJJW` |
 | Raw statement storage | S3 Block Public Access + SSE-S3 | `team14-budgetbot-cfn-raw-325137989598-ap-southeast-1`, AES256 encryption |
