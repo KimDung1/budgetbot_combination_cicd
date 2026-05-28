@@ -3,7 +3,10 @@ import csv
 import hashlib
 import io
 import logging
+import time
 from typing import Optional
+
+from src.config import config
 
 
 logger = logging.getLogger(__name__)
@@ -59,6 +62,7 @@ def handle_upload(
             f"{filename}|{i}|{row['date']}|{row['description']}|{row['amount']}".encode("utf-8")
         ).hexdigest()[:12]
         classify_rows.append({"row_id": row_id, **row})
+    classify_started = time.perf_counter()
     if hasattr(ai_client, "categorize_many"):
         category_results = ai_client.categorize_many(classify_rows)
     else:
@@ -66,6 +70,7 @@ def handle_upload(
             ai_client.categorize(description=row["description"], amount=row["amount"], date=row["date"])
             for row in classify_rows
         ]
+    bedrock_latency_ms = (time.perf_counter() - classify_started) * 1000
     for row, cat_result in zip(classify_rows, category_results):
         logger.warning(
             "bedrock_classification_result user_id=%s category=%s confidence=%s",
@@ -89,6 +94,12 @@ def handle_upload(
     low_confidence_count = sum(
         1 for result in category_results
         if result.get("confidence") == "low"
+    )
+    _put_upload_metrics(
+        upload_succeeded=1,
+        transactions_categorized=inserted,
+        low_confidence_transactions=low_confidence_count,
+        bedrock_latency_ms=bedrock_latency_ms,
     )
     return {
         "filename": filename,
@@ -132,3 +143,44 @@ def handle_review_queue(user_id: str, month: Optional[str], userstore) -> dict:
         "count": len(review_items),
         "items": review_items,
     }
+
+
+def _put_upload_metrics(
+    upload_succeeded: int,
+    transactions_categorized: int,
+    low_confidence_transactions: int,
+    bedrock_latency_ms: float,
+) -> None:
+    if not config.cloudwatch_namespace:
+        return
+    try:
+        import boto3
+
+        client = boto3.client("cloudwatch", region_name=config.aws_region)
+        client.put_metric_data(
+            Namespace=config.cloudwatch_namespace,
+            MetricData=[
+                {
+                    "MetricName": "UploadSucceeded",
+                    "Value": upload_succeeded,
+                    "Unit": "Count",
+                },
+                {
+                    "MetricName": "TransactionsCategorized",
+                    "Value": transactions_categorized,
+                    "Unit": "Count",
+                },
+                {
+                    "MetricName": "LowConfidenceTransactions",
+                    "Value": low_confidence_transactions,
+                    "Unit": "Count",
+                },
+                {
+                    "MetricName": "BedrockLatencyMs",
+                    "Value": bedrock_latency_ms,
+                    "Unit": "Milliseconds",
+                },
+            ],
+        )
+    except Exception:
+        logger.exception("cloudwatch_put_metric_data_failed")

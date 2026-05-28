@@ -58,13 +58,18 @@ Top cost drivers:
 Chosen optional capability: **Full Observability**.
 
 - CloudWatch dashboard:
+  - `team14-budgetbot-cfn-observability`
 - Custom metrics:
-  - `UploadSucceeded`
-  - `TransactionsCategorized`
-  - `LowConfidenceTransactions`
-  - `BedrockLatencyMs`
+  - `UploadSucceeded`: latest sample value `1`
+  - `TransactionsCategorized`: latest sample value `83`
+  - `LowConfidenceTransactions`: latest sample value `7`
+  - `BedrockLatencyMs`: latest sample value around `6102 ms`
 - Alarm:
+  - `team14-budgetbot-cfn-low-confidence-transactions`, state `OK` during validation.
 - Logs Insights query:
+  - Saved query: `team14-budgetbot-cfn/upload-classification-path`
+  - Query ID: `81030937-11c7-4d22-900e-b13f51a6c9d8`
+  - Test run returned 5 rows from Lambda logs.
 
 ## 6.5 Measurement & Decisions
 

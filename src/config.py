@@ -30,6 +30,7 @@ class Config:
 
     default_user_id: str = _env("DEFAULT_USER_ID", "test-user-001")
     log_level: str = _env("LOG_LEVEL", "INFO")
+    cloudwatch_namespace: str = _env("CLOUDWATCH_NAMESPACE", "")
 
 
     # Frontend serving (opt-out so backend can be pure API for split deploys)

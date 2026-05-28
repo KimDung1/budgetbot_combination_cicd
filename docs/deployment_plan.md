@@ -154,12 +154,12 @@ Owner: Data Owner
 
 Owner: Observability Owner
 
-- [ ] Thêm custom metric `UploadSucceeded`.
-- [ ] Thêm custom metric `TransactionsCategorized`.
-- [ ] Thêm custom metric `LowConfidenceTransactions`.
-- [ ] Tạo CloudWatch dashboard.
-- [ ] Tạo alarm ở trạng thái `OK` hoặc `ALARM`.
-- [ ] Lưu Logs Insights query.
+- [x] Thêm custom metric `UploadSucceeded`.
+- [x] Thêm custom metric `TransactionsCategorized`.
+- [x] Thêm custom metric `LowConfidenceTransactions`.
+- [x] Tạo CloudWatch dashboard.
+- [x] Tạo alarm ở trạng thái `OK` hoặc `ALARM`.
+- [x] Lưu Logs Insights query.
 
 ### 14:30-15:30 — Evidence Pack
 

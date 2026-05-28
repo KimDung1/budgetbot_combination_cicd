@@ -55,6 +55,7 @@ Mục tiêu phần này là chốt lại câu chuyện demo cuối cùng: cái g
 - File `bank_statement_q2_2026.csv` đã test thành công với `83` transaction.
 - Data Owner proof đã chạy với `user_id=data-owner-1779934940`: upload lưu 83 categorized transactions, query `month=2026-03` trả 30 transactions, DynamoDB query cùng key condition cũng trả count 30, và summary trả category breakdown.
 - CloudWatch logs đã có evidence từ Lambda và Bedrock classification path.
+- Observability Owner proof đã chạy với `user_id=observability-1779935557`: custom metrics có datapoints `UploadSucceeded=1`, `TransactionsCategorized=83`, `LowConfidenceTransactions=7`, `BedrockLatencyMs≈6102`; dashboard `team14-budgetbot-cfn-observability` tồn tại; alarm `team14-budgetbot-cfn-low-confidence-transactions` ở trạng thái `OK`; saved Logs Insights query `team14-budgetbot-cfn/upload-classification-path` chạy ra 5 rows.
 
 ### Public endpoints
 

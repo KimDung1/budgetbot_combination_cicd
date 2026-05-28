@@ -743,6 +743,19 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${BudgetBotApi}/*/*/*
 
+  BudgetBotLogsInsightsQuery:
+    Type: AWS::Logs::QueryDefinition
+    Condition: ShouldDeployApplication
+    Properties:
+      Name: !Sub ${ResourceNamePrefix}/upload-classification-path
+      LogGroupNames:
+        - !Ref BudgetBotLogGroup
+      QueryString: |
+        fields @timestamp, @message
+        | filter @message like /bedrock_classification_result|cloudwatch_put_metric_data_failed|upload|summary|review/
+        | sort @timestamp desc
+        | limit 50
+
   LowConfidenceAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
