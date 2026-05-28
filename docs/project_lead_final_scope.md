@@ -53,6 +53,7 @@ Mục tiêu phần này là chốt lại câu chuyện demo cuối cùng: cái g
 - Duplicate upload đã xử lý: upload cùng một file không nhân bản transaction.
 - Low-confidence review queue đã chạy qua API Gateway và hiển thị trên frontend.
 - File `bank_statement_q2_2026.csv` đã test thành công với `83` transaction.
+- Data Owner proof đã chạy với `user_id=data-owner-1779934940`: upload lưu 83 categorized transactions, query `month=2026-03` trả 30 transactions, DynamoDB query cùng key condition cũng trả count 30, và summary trả category breakdown.
 - CloudWatch logs đã có evidence từ Lambda và Bedrock classification path.
 
 ### Public endpoints

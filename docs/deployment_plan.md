@@ -145,10 +145,10 @@ Owner: Backend + AI Owner
 
 Owner: Data Owner
 
-- [ ] Lưu categorized transactions vào DynamoDB.
-- [ ] Query theo `user_id` và month.
-- [ ] Trả summary theo category.
-- [ ] Xác nhận data vẫn còn sau khi refresh browser.
+- [x] Lưu categorized transactions vào DynamoDB.
+- [x] Query theo `user_id` và month.
+- [x] Trả summary theo category.
+- [x] Xác nhận data vẫn còn sau khi refresh browser.
 
 ### 13:00-14:30 — Optional Capability: Full Observability
 
