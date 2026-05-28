@@ -436,60 +436,9 @@
   <section class="card">
     <div class="card-header">
       <h2><span class="step">6</span>Failure Cases & Fixes</h2>
-      <span class="meta">Documented AI errors and resolutions</span>
+      <span class="meta">AI misclassifications from accuracy test</span>
     </div>
-    <div style="display:flex;flex-direction:column;gap:1rem;">
-
-      <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;border-left:3px solid var(--error);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-          <strong>Case 1: Opaque Merchant Code</strong>
-          <span class="cat-pill" style="background:#fee2e2;color:#991b1b;">AI Failed</span>
-        </div>
-        <table style="font-size:0.82rem;margin:0.4rem 0;">
-          <tr><td style="color:var(--muted);width:80px;">Input</td><td><code>"Unknown merchant POS"</code> — ₫370,000</td></tr>
-          <tr><td style="color:var(--muted);">AI said</td><td><span class="cat-pill">Other</span> confidence: <strong style="color:var(--error);">low</strong></td></tr>
-          <tr><td style="color:var(--muted);">Human</td><td><span class="cat-pill">Shopping</span> (POS = Point of Sale at store)</td></tr>
-          <tr><td style="color:var(--muted);">Root cause</td><td>Merchant name masked — AI has zero information</td></tr>
-          <tr><td style="color:var(--muted);">Fix</td><td>✅ Low confidence → <strong>Review Queue</strong> → user corrects manually</td></tr>
-        </table>
-      </div>
-
-      <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;border-left:3px solid #f59e0b;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-          <strong>Case 2: Brand Not in Keywords</strong>
-          <span class="cat-pill" style="background:#fef3c7;color:#92400e;">LocalAI Failed</span>
-        </div>
-        <table style="font-size:0.82rem;margin:0.4rem 0;">
-          <tr><td style="color:var(--muted);width:80px;">Input</td><td><code>"Vietnam Airlines HAN-SGN"</code> — ₫631,000</td></tr>
-          <tr><td style="color:var(--muted);">LocalAI</td><td><span class="cat-pill">Other</span> ❌ (no keyword match)</td></tr>
-          <tr><td style="color:var(--muted);">Bedrock</td><td><span class="cat-pill">Transport</span> ✅ (LLM understands airlines)</td></tr>
-          <tr><td style="color:var(--muted);">Root cause</td><td>"Vietnam Airlines" not in keyword list — 7 similar cases</td></tr>
-          <tr><td style="color:var(--muted);">Fix</td><td>✅ Use <strong>Bedrock AI</strong> in production → handles novel merchants</td></tr>
-        </table>
-      </div>
-
-      <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;border-left:3px solid #3b82f6;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-          <strong>Case 3: Ambiguous Transfer vs Income</strong>
-          <span class="cat-pill" style="background:#dbeafe;color:#1e40af;">Edge Case</span>
-        </div>
-        <table style="font-size:0.82rem;margin:0.4rem 0;">
-          <tr><td style="color:var(--muted);width:80px;">Input</td><td><code>"Transfer from family"</code> — ₫1,832,000</td></tr>
-          <tr><td style="color:var(--muted);">AI said</td><td><span class="cat-pill">Transfer</span> (keyword "transfer from" matched)</td></tr>
-          <tr><td style="color:var(--muted);">Human</td><td><span class="cat-pill">Income</span> (money received = income)</td></tr>
-          <tr><td style="color:var(--muted);">Root cause</td><td>Semantically ambiguous — both labels are reasonable</td></tr>
-          <tr><td style="color:var(--muted);">Fix</td><td>✅ Updated prompt: "family transfers received → Income"</td></tr>
-        </table>
-      </div>
-
-      <div style="font-size:0.82rem;padding:0.8rem;background:var(--bg-alt);border-radius:var(--radius-sm);">
-        <strong>📊 Test Set Results:</strong> 40 transactions labeled manually →
-        <strong>LocalAI: 70%</strong> accuracy |
-        <strong>Bedrock: ~90%</strong> estimated |
-        <strong>With user correction: ~100%</strong>
-        <br><span class="muted">See <code>docs/accuracy_report.txt</code> and <code>docs/test_transactions.csv</code> for full metrics.</span>
-      </div>
-    </div>
+    <div id="failures-out"><div class="empty">Run accuracy test (Section 5) to see real failure cases.</div></div>
   </section>
 
   <section class="card">
@@ -497,24 +446,11 @@
       <h2><span class="step">7</span>AI Safety Guard</h2>
       <span class="meta">Prompt injection & malicious input protection</span>
     </div>
-    <div style="display:flex;flex-direction:column;gap:1rem;">
-      <div style="padding:0.8rem;background:var(--bg-alt);border-radius:var(--radius-sm);font-size:0.85rem;">
-        <strong>🛡️ Active protections:</strong>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.5rem;margin-top:0.5rem;">
-          <div style="padding:0.4rem 0.6rem;background:#f0fdf4;border-radius:4px;border-left:3px solid #22c55e;">SQL Injection Guard</div>
-          <div style="padding:0.4rem 0.6rem;background:#f0fdf4;border-radius:4px;border-left:3px solid #22c55e;">Command Injection Guard</div>
-          <div style="padding:0.4rem 0.6rem;background:#f0fdf4;border-radius:4px;border-left:3px solid #22c55e;">Template Injection Guard</div>
-          <div style="padding:0.4rem 0.6rem;background:#f0fdf4;border-radius:4px;border-left:3px solid #22c55e;">Prompt Injection Guard</div>
-        </div>
-      </div>
-
-      <div>
-        <div style="font-size:0.82rem;margin-bottom:0.4rem;"><strong>Test with malicious CSV:</strong> Upload <code>sample_data/safety_test.csv</code> to see blocked transactions.</div>
-        <button class="primary" style="font-size:0.82rem;" onclick="testSafety()">🧪 Run safety test</button>
-      </div>
-
-      <div id="safety-out"></div>
+    <div id="safety-out"><div class="empty">Loading safety stats...</div></div>
+    <div style="margin-top:0.8rem;">
+      <button class="primary" style="font-size:0.82rem;" onclick="testSafety()">🧪 Run safety test (8 malicious inputs)</button>
     </div>
+    <div id="safety-test-out" style="margin-top:0.8rem;"></div>
   </section>
 
   <details>
@@ -850,6 +786,8 @@ async function loadStats() {
       }).join('')}
     </div>
   `;
+  // Also update Section 7 safety stats
+  renderSafetyFromStats(s);
 }
 
 async function runAccuracy() {
@@ -916,29 +854,94 @@ async function runAccuracy() {
       ` : '<div style="margin-top:0.5rem;color:var(--success);font-weight:600;">✓ Perfect accuracy — no errors!</div>'}
     </div>
   `;
+
+  // Also render Section 6 — Failure Cases from real errors
+  if (d.errors.length) {
+    $('failures-out').innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:0.8rem;">
+        <div style="font-size:0.82rem;padding:0.6rem;background:var(--bg-alt);border-radius:var(--radius-sm);">
+          <strong>📊 ${d.errors.length} failure cases</strong> found from ${d.total} test transactions (Backend: <strong>${d.backend}</strong>, Accuracy: <strong>${d.accuracy}%</strong>)
+        </div>
+        ${d.errors.map((e, i) => `
+          <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.8rem;border-left:3px solid var(--error);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+              <strong>Case ${i+1}: ${e.description}</strong>
+              <span class="cat-pill" style="background:#fee2e2;color:#991b1b;">Misclassified</span>
+            </div>
+            <table style="font-size:0.82rem;">
+              <tr><td style="color:var(--muted);width:80px;">AI said</td><td><span class="cat-pill">${e.predicted}</span> (confidence: ${e.confidence})</td></tr>
+              <tr><td style="color:var(--muted);">Human</td><td><span class="cat-pill" style="background:#f0fdf4;color:#166534;">${e.human}</span></td></tr>
+              <tr><td style="color:var(--muted);">Fix</td><td>✅ ${e.confidence === 'low' ? 'Low confidence → Review Queue → user corrects' : 'Improve AI prompt or add keyword'}</td></tr>
+            </table>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    $('failures-out').innerHTML = '<div style="padding:1rem;background:#f0fdf4;border-radius:var(--radius-sm);color:#166534;font-weight:600;">✓ No failure cases — AI classified all 40 transactions correctly!</div>';
+  }
+}
+
+function loadSafety() {
+  // Render safety stats from /stats data (called after loadStats)
+}
+
+function renderSafetyFromStats(s) {
+  if (!s || !s.total) {
+    $('safety-out').innerHTML = '<div class="empty">Upload transactions to see safety stats.</div>';
+    return;
+  }
+  const blocked = s.blocked_count || 0;
+  const items = s.blocked_items || [];
+  const guards = ['SQL Injection', 'Command Injection', 'Template Injection', 'Prompt Injection'];
+
+  $('safety-out').innerHTML = `
+    <div style="padding:0.8rem;background:var(--bg-alt);border-radius:var(--radius-sm);font-size:0.85rem;">
+      <strong>🛡️ Active protections:</strong>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.5rem;margin-top:0.5rem;">
+        ${guards.map(g => `<div style="padding:0.4rem 0.6rem;background:#f0fdf4;border-radius:4px;border-left:3px solid #22c55e;">${g} Guard</div>`).join('')}
+      </div>
+    </div>
+    <div style="display:flex;gap:1rem;margin-top:0.8rem;">
+      <div style="text-align:center;padding:0.6rem 1rem;background:${blocked > 0 ? '#fef2f2' : '#f0fdf4'};border-radius:var(--radius-sm);border:2px solid ${blocked > 0 ? '#ef4444' : '#22c55e'};">
+        <div style="font-size:1.5rem;font-weight:800;color:${blocked > 0 ? '#ef4444' : '#22c55e'};">${blocked > 0 ? '🚫 ' + blocked : '✅ 0'}</div>
+        <div style="font-size:0.75rem;color:var(--muted);">Threats blocked</div>
+      </div>
+      <div style="flex:1;display:flex;align-items:center;font-size:0.85rem;">
+        <span>${s.total} transactions scanned. <strong>${blocked} malicious input(s) blocked</strong> before reaching AI.</span>
+      </div>
+    </div>
+    ${items.length ? `
+      <div style="margin-top:0.8rem;">
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;">Blocked transactions:</div>
+        <table style="font-size:0.8rem;">
+          <thead><tr><th>Date</th><th>Description</th><th>Status</th></tr></thead>
+          <tbody>
+            ${items.map(t => `
+              <tr style="background:#fef2f2;">
+                <td>${t.date}</td>
+                <td><code>${(t.description || '').slice(0, 50)}</code></td>
+                <td><span style="color:#ef4444;font-weight:700;">🚫 BLOCKED</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    ` : ''}
+  `;
 }
 
 async function testSafety() {
-  $('safety-out').innerHTML = '<div class="empty"><span class="spinner"></span> Uploading safety test CSV...</div>';
+  $('safety-test-out').innerHTML = '<div class="empty"><span class="spinner"></span> Uploading safety test CSV...</div>';
 
-  // Fetch the safety test CSV
-  let csvText;
-  try {
-    const resp = await fetch(API_BASE.includes('localhost') || API_BASE.includes('127.0.0.1')
-      ? '/static/safety_test.csv'
-      : 'data:text/csv;base64,' + btoa(SAFETY_TEST_CSV));
-    csvText = SAFETY_TEST_CSV;
-  } catch(e) {
-    csvText = SAFETY_TEST_CSV;
-  }
-
+  const csvText = SAFETY_TEST_CSV;
   const blob = new Blob([csvText], {type: 'text/csv'});
   const formData = new FormData();
   formData.append('file', blob, 'safety_test.csv');
 
   const res = await call('/upload', {method: 'POST', body: formData, rawBody: true});
   if (!res.ok) {
-    $('safety-out').innerHTML = '<div class="empty" style="color:var(--error);">Safety test failed.</div>';
+    $('safety-test-out').innerHTML = '<div class="empty" style="color:var(--error);">Safety test failed.</div>';
     return;
   }
 
@@ -947,12 +950,11 @@ async function testSafety() {
   const total = d.rows_parsed || 0;
   const safe = total - blocked;
 
-  // Reload transactions to show blocked ones
   const txnRes = await call('/transactions');
   const txns = txnRes.ok ? txnRes.body.transactions || [] : [];
   const recent = txns.filter(t => t.confidence === 'blocked' || t.date === '2026-05-28').slice(0, 10);
 
-  $('safety-out').innerHTML = `
+  $('safety-test-out').innerHTML = `
     <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;">
       <div style="display:flex;gap:1rem;margin-bottom:1rem;">
         <div style="text-align:center;padding:0.6rem 1rem;background:#fef2f2;border-radius:var(--radius-sm);border:2px solid #ef4444;">
@@ -964,7 +966,7 @@ async function testSafety() {
           <div style="font-size:0.75rem;color:var(--muted);">Safe</div>
         </div>
         <div style="flex:1;display:flex;align-items:center;font-size:0.85rem;">
-          <span>${total} transactions scanned. <strong>${blocked} malicious inputs blocked</strong> before reaching AI.</span>
+          <span>Test result: ${total} inputs scanned, <strong>${blocked} blocked</strong>.</span>
         </div>
       </div>
       <table style="font-size:0.8rem;">
@@ -983,7 +985,9 @@ async function testSafety() {
       </table>
     </div>
   `;
-  toast('Safety test complete: ' + blocked + ' threats blocked', blocked > 0 ? 'success' : 'info');
+  toast('Safety test: ' + blocked + ' threats blocked', blocked > 0 ? 'success' : 'info');
+  // Refresh safety stats
+  loadStats();
 }
 
 const SAFETY_TEST_CSV = `date,description,amount

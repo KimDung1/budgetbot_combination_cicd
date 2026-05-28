@@ -197,9 +197,10 @@ def handle_stats(user_id: str, userstore) -> dict:
         return {"total": 0}
 
     # Confidence distribution
-    conf_dist = {"high": 0, "medium": 0, "low": 0, "human": 0}
+    conf_dist = {"high": 0, "medium": 0, "low": 0, "human": 0, "blocked": 0}
     cat_dist: dict[str, int] = {}
     corrections = 0
+    blocked_items: list[dict] = []
 
     for t in txns:
         c = str(t.get("confidence", "")).lower()
@@ -211,6 +212,12 @@ def handle_stats(user_id: str, userstore) -> dict:
         cat_dist[cat] = cat_dist.get(cat, 0) + 1
         if c == "human":
             corrections += 1
+        if c == "blocked":
+            blocked_items.append({
+                "date": t.get("date", ""),
+                "description": t.get("description", ""),
+                "amount": t.get("amount", 0),
+            })
 
     total = len(txns)
     return {
@@ -219,6 +226,8 @@ def handle_stats(user_id: str, userstore) -> dict:
         "confidence_pct": {k: round(v / total * 100, 1) for k, v in conf_dist.items()} if total else {},
         "by_category": dict(sorted(cat_dist.items(), key=lambda x: -x[1])),
         "corrections": corrections,
+        "blocked_count": conf_dist["blocked"],
+        "blocked_items": blocked_items[:20],
     }
 
 
