@@ -583,19 +583,35 @@ async function summary() {
 }
 
 // ---------- Transactions ----------
+let allTxns = [];
+let txnPage = 0;
+const PAGE_SIZE = 50;
+
 async function loadTxns() {
   $('txns-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loading…</div>';
   const res = await call('/transactions');
   if (!res.ok || !res.body.transactions || !res.body.transactions.length) {
+    allTxns = [];
     $('txns-out').innerHTML = '<div class="empty">No transactions yet.</div>';
     return;
   }
-  const t = res.body.transactions;
+  allTxns = res.body.transactions;
+  txnPage = 0;
+  renderTxnPage();
+}
+
+function renderTxnPage() {
+  const t = allTxns;
+  const totalPages = Math.ceil(t.length / PAGE_SIZE);
+  const start = txnPage * PAGE_SIZE;
+  const end = Math.min(start + PAGE_SIZE, t.length);
+  const page = t.slice(start, end);
+
   $('txns-out').innerHTML = `
     <table>
       <thead><tr><th>Date</th><th>Description</th><th>Category</th><th style="text-align:right;">Amount</th></tr></thead>
       <tbody>
-        ${t.slice(0, 50).map(r => `
+        ${page.map(r => `
           <tr>
             <td>${r.date}</td>
             <td>${(r.description || '').slice(0, 50)}</td>
@@ -605,9 +621,18 @@ async function loadTxns() {
         `).join('')}
       </tbody>
     </table>
-    ${t.length > 50 ? `<p class="muted" style="font-size:0.78rem; margin-top:0.5rem;">Showing 50 of ${t.length}</p>` : ''}
+    ${t.length > PAGE_SIZE ? `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.6rem;">
+        <button class="ghost" style="min-height:34px;padding:0.3rem 0.8rem;font-size:0.85rem;" onclick="txnPrev()" ${txnPage === 0 ? 'disabled' : ''}>◀ Prev</button>
+        <span class="muted" style="font-size:0.8rem;">Showing ${start + 1}–${end} of ${t.length}</span>
+        <button class="ghost" style="min-height:34px;padding:0.3rem 0.8rem;font-size:0.85rem;" onclick="txnNext()" ${txnPage >= totalPages - 1 ? 'disabled' : ''}>Next ▶</button>
+      </div>
+    ` : ''}
   `;
 }
+
+function txnPrev() { if (txnPage > 0) { txnPage--; renderTxnPage(); } }
+function txnNext() { if ((txnPage + 1) * PAGE_SIZE < allTxns.length) { txnPage++; renderTxnPage(); } }
 
 async function loadReviewQueue() {
   $('review-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loading…</div>';
