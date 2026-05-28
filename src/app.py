@@ -85,6 +85,14 @@ def transactions(
     return handlers.handle_list_transactions(_resolve_user_id(x_user_id), month, userstore)
 
 
+@app.get("/review-queue")
+def review_queue(
+    month: Optional[str] = None,
+    x_user_id: Optional[str] = Header(default=None),
+) -> dict:
+    return handlers.handle_review_queue(_resolve_user_id(x_user_id), month, userstore)
+
+
 # ---- Static frontend ----
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 

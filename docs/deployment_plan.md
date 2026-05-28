@@ -126,20 +126,20 @@ Owner: Project Lead
 
 Owner: Project Lead
 
-- [ ] Liệt kê cái đã chạy.
-- [ ] Cắt những phần không cần thiết.
-- [ ] Xác nhận demo path cuối.
+- [x] Liệt kê cái đã chạy.
+- [x] Cắt những phần không cần thiết.
+- [x] Xác nhận demo path cuối.
 
 ### 09:30-12:00 — Tích Hợp AI
 
 Owner: Backend + AI Owner
 
-- [ ] Thay local classifier bằng Bedrock path cho deployed environment.
-- [ ] Dùng prompt bắt model trả JSON-only.
-- [ ] Thêm confidence output.
-- [ ] Thêm low-confidence review queue.
-- [ ] Batch classify transactions nếu kịp.
-- [ ] Test bằng `sample_data/bank_statement_q2_2026.csv`.
+- [x] Thay local classifier bằng Bedrock path cho deployed environment.
+- [x] Dùng prompt bắt model trả JSON-only.
+- [x] Thêm confidence output.
+- [x] Thêm low-confidence review queue.
+- [x] Batch classify transactions nếu kịp.
+- [x] Test bằng `sample_data/bank_statement_q2_2026.csv`.
 
 ### 12:00-13:00 — Data Và Summary
 

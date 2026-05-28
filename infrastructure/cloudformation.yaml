@@ -705,6 +705,14 @@ Resources:
       RouteKey: GET /transactions
       Target: !Sub integrations/${BudgetBotIntegration}
 
+  BudgetBotRouteReviewQueue:
+    Type: AWS::ApiGatewayV2::Route
+    Condition: ShouldDeployApplication
+    Properties:
+      ApiId: !Ref BudgetBotApi
+      RouteKey: GET /review-queue
+      Target: !Sub integrations/${BudgetBotIntegration}
+
   BudgetBotRouteHealth:
     Type: AWS::ApiGatewayV2::Route
     Condition: ShouldDeployApplication

@@ -12,6 +12,7 @@ CATEGORIES = [
     "Food", "Transport", "Shopping", "Utilities", "Entertainment",
     "Health", "Subscriptions", "Income", "Transfer", "Other",
 ]
+CONFIDENCES = {"high", "medium", "low"}
 
 
 CATEGORIZE_PROMPT = """Categorize the following bank transaction into exactly one category.
@@ -46,13 +47,21 @@ def _parse_json_response(text: str) -> dict:
         try:
             obj = json.loads(match.group())
             if obj.get("category") in CATEGORIES:
-                return {
-                    "category": obj["category"],
-                    "confidence": obj.get("confidence", "medium"),
-                }
+                return _normalize_result(obj["category"], obj.get("confidence", "medium"))
         except json.JSONDecodeError:
             pass
     return {"category": "Other", "confidence": "low"}
+
+
+def _normalize_result(category: str, confidence: str) -> dict:
+    if category not in CATEGORIES:
+        category = "Other"
+    confidence = str(confidence).lower()
+    if confidence not in CONFIDENCES:
+        confidence = "medium"
+    if category == "Other":
+        confidence = "low"
+    return {"category": category, "confidence": confidence}
 
 
 def _extract_json(text: str) -> Any:
@@ -143,12 +152,10 @@ class BedrockAI:
             if not isinstance(item, dict):
                 continue
             category = item.get("category")
-            if category not in CATEGORIES:
-                category = "Other"
-            by_id[str(item.get("row_id"))] = {
-                "category": category,
-                "confidence": item.get("confidence", "medium"),
-            }
+            by_id[str(item.get("row_id"))] = _normalize_result(
+                category=category,
+                confidence=item.get("confidence", "medium"),
+            )
         return by_id
 
 

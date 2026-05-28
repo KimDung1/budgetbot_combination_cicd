@@ -90,3 +90,21 @@ def test_transactions_isolated_per_user():
     r_b = client.get("/transactions", headers={"X-User-Id": "user-iso-B"})
     assert len(r_a.json()["transactions"]) == 4
     assert len(r_b.json()["transactions"]) == 0
+
+
+def test_review_queue_returns_low_confidence_transactions():
+    csv_data = b"""date,description,amount
+2026-05-09,Unknown counterparty,-12345
+2026-05-10,Highlands Coffee,-65000
+"""
+    client.post(
+        "/upload",
+        files={"file": ("review.csv", csv_data, "text/csv")},
+        headers={"X-User-Id": "review-user"},
+    )
+    r = client.get("/review-queue", headers={"X-User-Id": "review-user"})
+    assert r.status_code == 200
+    body = r.json()
+    assert body["count"] == 1
+    assert body["items"][0]["description"] == "Unknown counterparty"
+    assert body["items"][0]["confidence"] == "low"

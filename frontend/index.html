@@ -408,9 +408,17 @@
   <section class="card">
     <div class="card-header">
       <h2><span class="step">3</span>All transactions</h2>
-      <button class="ghost" onclick="loadTxns()">Refresh</button>
+      <button class="ghost" onclick="refreshData()">Refresh</button>
     </div>
     <div id="txns-out"><div class="empty">No transactions yet.</div></div>
+  </section>
+
+  <section class="card">
+    <div class="card-header">
+      <h2><span class="step">4</span>Review queue</h2>
+      <span class="meta">Low confidence classifications</span>
+    </div>
+    <div id="review-out"><div class="empty">No low-confidence items yet.</div></div>
   </section>
 
   <details>
@@ -516,11 +524,12 @@ async function doUpload(file) {
   const b = res.body;
   $('upload-result').innerHTML = `
     <div style="margin-top:0.8rem; padding:0.8rem; background:#f0fdf4; border-radius:var(--radius-sm); border-left:3px solid var(--success); font-size:0.88rem;">
-      ✓ <strong>${b.filename}</strong> — ${b.rows_inserted} of ${b.rows_parsed} rows inserted &amp; categorized
+      ✓ <strong>${b.filename}</strong> — ${b.rows_inserted} of ${b.rows_parsed} rows inserted &amp; categorized.
+      ${b.low_confidence_count ? `${b.low_confidence_count} sent to review.` : 'No low-confidence review items.'}
     </div>`;
   toast(`Categorized ${b.rows_inserted} transactions`, 'success');
   summary();
-  loadTxns();
+  refreshData();
 }
 
 // ---------- Summary ----------
@@ -600,8 +609,41 @@ async function loadTxns() {
   `;
 }
 
+async function loadReviewQueue() {
+  $('review-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loading…</div>';
+  const res = await call('/review-queue');
+  if (!res.ok || !res.body.items || !res.body.items.length) {
+    $('review-out').innerHTML = '<div class="empty">No low-confidence items yet.</div>';
+    return;
+  }
+  const items = res.body.items;
+  $('review-out').innerHTML = `
+    <table>
+      <thead><tr><th>Date</th><th>Description</th><th>Suggested</th><th>Confidence</th><th style="text-align:right;">Amount</th></tr></thead>
+      <tbody>
+        ${items.slice(0, 20).map(r => `
+          <tr>
+            <td>${r.date}</td>
+            <td>${(r.description || '').slice(0, 50)}</td>
+            <td><span class="cat-pill">${r.category}</span></td>
+            <td>${r.confidence}</td>
+            <td class="amt ${r.amount < 0 ? 'neg' : 'pos'}">${r.amount >= 0 ? '+' : ''}${fmt(r.amount)}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+    ${items.length > 20 ? `<p class="muted" style="font-size:0.78rem; margin-top:0.5rem;">Showing 20 of ${items.length}</p>` : ''}
+  `;
+}
+
+function refreshData() {
+  loadTxns();
+  loadReviewQueue();
+}
+
 syncMonthDisplay();
 loadStatus();
+loadReviewQueue();
 </script>
 </body>
 </html>

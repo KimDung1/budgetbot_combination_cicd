@@ -86,11 +86,16 @@ def handle_upload(
         inserted += 1
         if len(samples) < 5:
             samples.append(txn)
+    low_confidence_count = sum(
+        1 for result in category_results
+        if result.get("confidence") == "low"
+    )
     return {
         "filename": filename,
         "stored_at": location,
         "rows_parsed": len(rows),
         "rows_inserted": inserted,
+        "low_confidence_count": low_confidence_count,
         "sample_categorized": samples,
     }
 
@@ -113,3 +118,17 @@ def handle_summary(user_id: str, month: Optional[str], userstore) -> dict:
 
 def handle_list_transactions(user_id: str, month: Optional[str], userstore) -> dict:
     return {"user_id": user_id, "month": month, "transactions": userstore.list_transactions(user_id, month=month)}
+
+
+def handle_review_queue(user_id: str, month: Optional[str], userstore) -> dict:
+    transactions = userstore.list_transactions(user_id, month=month)
+    review_items = [
+        txn for txn in transactions
+        if str(txn.get("confidence", "")).lower() == "low"
+    ]
+    return {
+        "user_id": user_id,
+        "month": month,
+        "count": len(review_items),
+        "items": review_items,
+    }
