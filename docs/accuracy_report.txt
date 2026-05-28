@@ -1,0 +1,50 @@
+========================================================================
+BUDGETBOT — AI ACCURACY REPORT
+========================================================================
+Test set: 40 transactions
+Overall accuracy: 28/40 = 70.0%
+
+Category          TP  FP  FN  Precision     Recall         F1
+------------------------------------------------------------------------
+Entertainment      3   0   0      1.000      1.000      1.000
+Food               5   0   4      1.000      0.556      0.714
+Health             2   0   1      1.000      0.667      0.800
+Income             2   0   1      1.000      0.667      0.800
+Other              2  11   0      0.154      1.000      0.267
+Shopping           2   0   2      1.000      0.500      0.667
+Subscriptions      2   0   2      1.000      0.500      0.667
+Transfer           1   1   0      0.500      1.000      0.667
+Transport          5   0   2      1.000      0.714      0.833
+Utilities          4   0   0      1.000      1.000      1.000
+------------------------------------------------------------------------
+MACRO AVG                         0.865      0.760      0.741
+
+CONFUSION MATRIX
+------------------------------------------------------------------------
+Actual \\ Predicted Entertainment          Food        Health        Income         Other      Shopping Subscriptions      Transfer     Transport     Utilities
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+Entertainment               3             .             .             .             .             .             .             .             .             .
+Food                        .             5             .             .             4             .             .             .             .             .
+Health                      .             .             2             .             1             .             .             .             .             .
+Income                      .             .             .             2             .             .             .             1             .             .
+Other                       .             .             .             .             2             .             .             .             .             .
+Shopping                    .             .             .             .             2             2             .             .             .             .
+Subscriptions               .             .             .             .             2             .             2             .             .             .
+Transfer                    .             .             .             .             .             .             .             1             .             .
+Transport                   .             .             .             .             2             .             .             .             5             .
+Utilities                   .             .             .             .             .             .             .             .             .             4
+
+MISCLASSIFIED TRANSACTIONS (12 errors)
+------------------------------------------------------------------------
+  Vietnam Airlines HAN-SGN            AI=Other           Human=Transport       conf=low
+  Phuc Long Tea                       AI=Other           Human=Food            conf=low
+  Pharmacity                          AI=Other           Human=Health          conf=low
+  Vietnam Airlines HAN-SGN            AI=Other           Human=Transport       conf=low
+  Cursor Pro                          AI=Other           Human=Subscriptions   conf=low
+  KFC District 1                      AI=Other           Human=Food            conf=low
+  Unknown merchant POS                AI=Other           Human=Shopping        conf=low
+  Transfer from family                AI=Transfer        Human=Income          conf=medium
+  Pizza 4Ps                           AI=Other           Human=Food            conf=low
+  YouTube Premium                     AI=Other           Human=Subscriptions   conf=low
+  Co.opmart                           AI=Other           Human=Food            conf=low
+  Uniqlo Saigon                       AI=Other           Human=Shopping        conf=low

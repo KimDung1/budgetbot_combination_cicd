@@ -93,6 +93,18 @@ def review_queue(
     return handlers.handle_review_queue(_resolve_user_id(x_user_id), month, userstore)
 
 
+@app.get("/stats")
+def stats(
+    x_user_id: Optional[str] = Header(default=None),
+) -> dict:
+    return handlers.handle_stats(_resolve_user_id(x_user_id), userstore)
+
+
+@app.get("/accuracy")
+def accuracy() -> dict:
+    return handlers.handle_accuracy(ai_client)
+
+
 @app.post("/correct")
 async def correct_transaction(
     request: Request,

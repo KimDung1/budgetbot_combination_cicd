@@ -1,8 +1,33 @@
+# Python
 .venv/
 venv/
 __pycache__/
 *.pyc
-.env
-_data/
-.pytest_cache/
+*.pyo
 *.egg-info/
+dist/
+build/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment
+.env
+
+# Local data
+_data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp test files
+_test_*

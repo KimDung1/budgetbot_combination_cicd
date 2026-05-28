@@ -7,6 +7,7 @@ import time
 from typing import Optional
 
 from src.config import config
+from src.adapters.safety import check_safety
 
 
 logger = logging.getLogger(__name__)
@@ -57,11 +58,26 @@ def handle_upload(
     inserted = 0
     samples = []
     classify_rows = []
+    safe_rows = []
+    blocked_rows = []
+    safety_blocked = 0
     for i, row in enumerate(rows):
         row_id = hashlib.sha1(
             f"{filename}|{i}|{row['date']}|{row['description']}|{row['amount']}".encode("utf-8")
         ).hexdigest()[:12]
-        classify_rows.append({"row_id": row_id, **row})
+        enriched = {"row_id": row_id, **row}
+        # --- AI Safety Check ---
+        safety = check_safety(row["description"])
+        if not safety["safe"]:
+            logger.warning(
+                "safety_blocked user_id=%s description=%s threat=%s pattern=%s",
+                user_id, row["description"][:50], safety["threat_type"], safety["pattern"],
+            )
+            blocked_rows.append(enriched)
+            safety_blocked += 1
+        else:
+            safe_rows.append(enriched)
+    classify_rows = safe_rows
     classify_started = time.perf_counter()
     if hasattr(ai_client, "categorize_many"):
         category_results = ai_client.categorize_many(classify_rows)
@@ -91,6 +107,19 @@ def handle_upload(
         inserted += 1
         if len(samples) < 5:
             samples.append(txn)
+    # Store blocked rows with safety flag
+    for row in blocked_rows:
+        txn = {
+            "date": row["date"],
+            "description": row["description"],
+            "amount": row["amount"],
+            "category": "Other",
+            "confidence": "blocked",
+            "source_file": filename,
+            "txn_id": row["row_id"],
+        }
+        userstore.add_transaction(user_id, txn)
+        inserted += 1
     low_confidence_count = sum(
         1 for result in category_results
         if result.get("confidence") == "low"
@@ -107,6 +136,7 @@ def handle_upload(
         "rows_parsed": len(rows),
         "rows_inserted": inserted,
         "low_confidence_count": low_confidence_count,
+        "safety_blocked": safety_blocked,
         "sample_categorized": samples,
     }
 
@@ -158,6 +188,84 @@ def handle_correct_transaction(user_id: str, sk: str, new_category: str, usersto
     if not hasattr(userstore, "correct_transaction"):
         return {"error": "Correction not supported by current userstore backend"}
     return userstore.correct_transaction(user_id, sk, new_category)
+
+
+def handle_stats(user_id: str, userstore) -> dict:
+    """Compute AI performance stats from live transaction data."""
+    txns = userstore.list_transactions(user_id)
+    if not txns:
+        return {"total": 0}
+
+    # Confidence distribution
+    conf_dist = {"high": 0, "medium": 0, "low": 0, "human": 0}
+    cat_dist: dict[str, int] = {}
+    corrections = 0
+
+    for t in txns:
+        c = str(t.get("confidence", "")).lower()
+        if c in conf_dist:
+            conf_dist[c] += 1
+        else:
+            conf_dist["medium"] += 1
+        cat = t.get("category", "Other")
+        cat_dist[cat] = cat_dist.get(cat, 0) + 1
+        if c == "human":
+            corrections += 1
+
+    total = len(txns)
+    return {
+        "total": total,
+        "confidence": conf_dist,
+        "confidence_pct": {k: round(v / total * 100, 1) for k, v in conf_dist.items()} if total else {},
+        "by_category": dict(sorted(cat_dist.items(), key=lambda x: -x[1])),
+        "corrections": corrections,
+    }
+
+
+def handle_accuracy(ai_client) -> dict:
+    """Run test set through current AI backend and return precision/recall."""
+    from src.test_data import TEST_TRANSACTIONS
+    from collections import defaultdict
+
+    results = []
+    for row in TEST_TRANSACTIONS:
+        pred = ai_client.categorize(
+            description=row["description"],
+            amount=row["amount"],
+            date=row["date"],
+        )
+        results.append({
+            "description": row["description"],
+            "human": row["human_label"],
+            "predicted": pred["category"],
+            "confidence": pred["confidence"],
+            "correct": pred["category"] == row["human_label"],
+        })
+
+    # Per-category metrics
+    all_cats = sorted(set(r["human"] for r in results) | set(r["predicted"] for r in results))
+    metrics = {}
+    for cat in all_cats:
+        tp = sum(1 for r in results if r["predicted"] == cat and r["human"] == cat)
+        fp = sum(1 for r in results if r["predicted"] == cat and r["human"] != cat)
+        fn = sum(1 for r in results if r["predicted"] != cat and r["human"] == cat)
+        p = tp / (tp + fp) if (tp + fp) > 0 else 0
+        r_ = tp / (tp + fn) if (tp + fn) > 0 else 0
+        f1 = 2 * p * r_ / (p + r_) if (p + r_) > 0 else 0
+        metrics[cat] = {"tp": tp, "fp": fp, "fn": fn, "precision": round(p, 3), "recall": round(r_, 3), "f1": round(f1, 3)}
+
+    total = len(results)
+    correct = sum(1 for r in results if r["correct"])
+    errors = [r for r in results if not r["correct"]]
+
+    return {
+        "backend": config.ai_backend,
+        "total": total,
+        "correct": correct,
+        "accuracy": round(correct / total * 100, 1) if total else 0,
+        "per_category": metrics,
+        "errors": errors[:20],
+    }
 
 
 def _put_upload_metrics(

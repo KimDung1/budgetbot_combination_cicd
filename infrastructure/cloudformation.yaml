@@ -746,6 +746,22 @@ Resources:
       RouteKey: POST /correct
       Target: !Sub integrations/${BudgetBotIntegration}
 
+  BudgetBotRouteStats:
+    Type: AWS::ApiGatewayV2::Route
+    Condition: ShouldDeployApplication
+    Properties:
+      ApiId: !Ref BudgetBotApi
+      RouteKey: GET /stats
+      Target: !Sub integrations/${BudgetBotIntegration}
+
+  BudgetBotRouteAccuracy:
+    Type: AWS::ApiGatewayV2::Route
+    Condition: ShouldDeployApplication
+    Properties:
+      ApiId: !Ref BudgetBotApi
+      RouteKey: GET /accuracy
+      Target: !Sub integrations/${BudgetBotIntegration}
+
   BudgetBotStage:
     Type: AWS::ApiGatewayV2::Stage
     Condition: ShouldDeployApplication
