@@ -3,885 +3,813 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BudgetBot Dashboard</title>
+  <title>BudgetBot — AI Finance Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     :root {
-      --bg: #f8fafc;
+      --bg: #f0f4f8;
       --surface: #ffffff;
-      --sidebar-bg: #0f172a;
-      --sidebar-hover: #1e293b;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --text-sidebar: #94a3b8;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --border: #e2e8f0;
+      --sidebar: #111827;
+      --sidebar-text: #9ca3af;
+      --sidebar-active: #1f2937;
+      --accent: #6366f1;
+      --accent2: #8b5cf6;
       --success: #10b981;
       --error: #ef4444;
       --warn: #f59e0b;
-      --radius: 12px;
+      --info: #3b82f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --bg-alt: #f9fafb;
+      --radius: 14px;
       --radius-sm: 8px;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      --bg-alt: #f1f5f9;
+      --shadow: 0 1px 3px 0 rgb(0 0 0/.1),0 1px 2px -1px rgb(0 0 0/.1);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0/.1),0 2px 4px -2px rgb(0 0 0/.1);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-    
-    /* Layout */
-    .sidebar {
-      width: 260px;
-      background: var(--sidebar-bg);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-    }
-    .main-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .header {
-      height: 70px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2rem;
-      flex-shrink: 0;
-    }
-    .content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 2rem;
-    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;font-size:14px;}
 
-    /* Sidebar */
-    .brand {
-      height: 70px;
-      display: flex;
-      align-items: center;
-      padding: 0 1.5rem;
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      color: white;
-    }
-    .brand svg { width: 24px; height: 24px; margin-right: 12px; color: #38bdf8; }
-    .nav-links {
-      padding: 1.5rem 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .nav-link {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      color: var(--text-sidebar);
-      text-decoration: none;
-      border-radius: var(--radius-sm);
-      font-weight: 500;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-    .nav-link:hover, .nav-link.active {
-      background: var(--sidebar-hover);
-      color: white;
-    }
-    .nav-link svg { width: 20px; height: 20px; margin-right: 12px; opacity: 0.7; }
-    .nav-link.active svg { opacity: 1; color: #38bdf8; }
+    /* ── Sidebar ── */
+    .sidebar{width:240px;background:var(--sidebar);display:flex;flex-direction:column;flex-shrink:0;padding-bottom:1rem;}
+    .brand{padding:1.25rem 1.25rem 0.75rem;display:flex;align-items:center;gap:0.6rem;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:0.5rem;}
+    .brand-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:grid;place-items:center;color:white;font-size:1rem;}
+    .brand-name{font-size:1rem;font-weight:700;color:white;line-height:1.2;}
+    .brand-sub{font-size:0.7rem;color:var(--sidebar-text);margin-top:1px;}
+    .nav-section{padding:0 0.75rem;margin-bottom:0.25rem;}
+    .nav-label{font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#4b5563;padding:0.5rem 0.5rem 0.3rem;}
+    .nav-link{display:flex;align-items:center;gap:0.6rem;padding:0.55rem 0.75rem;color:var(--sidebar-text);border-radius:var(--radius-sm);font-size:0.83rem;font-weight:500;cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left;position:relative;}
+    .nav-link:hover{background:rgba(255,255,255,.05);color:#d1d5db;}
+    .nav-link.active{background:var(--sidebar-active);color:white;}
+    .nav-link.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:var(--accent);border-radius:0 2px 2px 0;}
+    .nav-link svg{width:16px;height:16px;flex-shrink:0;}
+    .nav-badge{margin-left:auto;background:var(--error);color:white;font-size:0.65rem;padding:1px 6px;border-radius:999px;font-weight:600;}
+    .nav-badge.green{background:var(--success);}
+    .sidebar-footer{margin-top:auto;padding:0.75rem 1rem;border-top:1px solid rgba(255,255,255,.06);font-size:0.72rem;color:#4b5563;}
 
-    /* Header */
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.5rem 1rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      border-radius: var(--radius-sm);
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-primary { background: var(--accent); color: white; }
-    .btn-primary:hover { background: var(--accent-hover); }
-    .btn-outline { background: white; border-color: var(--border); color: var(--text); }
-    .btn-outline:hover { background: var(--bg); }
-    
-    /* Upload Zone */
-    .upload-card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 2rem;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border);
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .drop-zone {
-      border: 2px dashed #cbd5e1;
-      border-radius: var(--radius-sm);
-      padding: 3rem 2rem;
-      background: #f8fafc;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .drop-zone:hover { border-color: var(--accent); background: #eff6ff; }
-    .drop-zone svg { width: 48px; height: 48px; color: #94a3b8; margin-bottom: 1rem; }
-    
-    /* Dashboard Grid */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
-    
-    .card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border);
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-    }
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-    }
-    .card-title { font-size: 1.1rem; font-weight: 600; color: var(--text); }
-    
-    /* Tables */
-    .table-container { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; text-align: left; }
-    th { padding: 0.75rem 1rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); background: #f8fafc; }
-    td { padding: 1rem; font-size: 0.875rem; border-bottom: 1px solid var(--border); color: var(--text); }
-    tr:last-child td { border-bottom: none; }
-    
-    .cat-pill {
-      display: inline-block; padding: 0.25rem 0.6rem; border-radius: 999px;
-      font-size: 0.75rem; font-weight: 500; background: #e2e8f0; color: #334155;
-    }
-    
-    /* Bar Charts */
-    .bar-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; font-size: 0.875rem; }
-    .bar-row .cat { width: 120px; font-weight: 500; }
-    .bar-row .track { flex: 1; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
-    .bar-row .fill { height: 100%; border-radius: 4px; }
-    .bar-row.expense .fill { background: var(--error); }
-    .bar-row.income .fill { background: var(--success); }
-    .bar-row .amt { width: 90px; text-align: right; font-weight: 600; }
-    
-    /* Utility classes needed by JS templates */
-    
-    .muted { color: var(--text-muted); }
-    .amt.pos { color: var(--success); font-weight: 600; }
-    .amt.neg { color: var(--error); font-weight: 600; }
-    .ghost {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.4rem 0.75rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-    .ghost:hover { background: var(--bg); }
+    /* ── Main layout ── */
+    .main-wrapper{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+    .topbar{height:60px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;gap:1rem;flex-shrink:0;}
+    .topbar-left{display:flex;align-items:center;gap:1rem;}
+    .page-title{font-size:1rem;font-weight:600;}
+    .topbar-right{display:flex;align-items:center;gap:0.75rem;}
+    .month-filter{display:flex;align-items:center;gap:0.5rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.35rem 0.6rem;}
+    .month-filter label{font-size:0.78rem;color:var(--muted);white-space:nowrap;}
+    .month-filter input{border:none;background:transparent;font:inherit;font-size:0.78rem;color:var(--text);outline:none;cursor:pointer;}
+    .month-filter .clear-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:0;line-height:1;font-size:0.9rem;}
+    .month-filter .clear-btn:hover{color:var(--error);}
+    .btn{display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;font-size:0.82rem;font-weight:500;border-radius:var(--radius-sm);border:1px solid transparent;cursor:pointer;transition:all .15s;font-family:inherit;}
+    .btn-primary{background:var(--accent);color:white;border-color:var(--accent);}
+    .btn-primary:hover{background:#4f46e5;}
+    .btn-outline{background:var(--surface);border-color:var(--border);color:var(--text);}
+    .btn-outline:hover{background:var(--bg-alt);}
+    .btn-sm{padding:0.3rem 0.65rem;font-size:0.78rem;}
 
-    /* Summary totals tiles */
-    .summary-totals {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    .total-tile {
-      padding: 1rem;
-      border-radius: var(--radius-sm);
-      text-align: center;
-      border: 1px solid var(--border);
-    }
-    .total-tile.income { background: #f0fdf4; }
-    .total-tile.expense { background: #fef2f2; }
-    .total-tile.net { background: #eff6ff; }
-    .total-tile .label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
-    .total-tile .value { font-size: 1.5rem; font-weight: 700; }
-    .total-tile.income .value { color: var(--success); }
-    .total-tile.expense .value { color: var(--error); }
-    .total-tile.net .value { color: var(--accent); }
-    
-    /* Section toggling */
-    .section { display: none; }
-    .section.active { display: block; }
+    /* ── Content ── */
+    .content{flex:1;overflow-y:auto;padding:1.5rem;}
+    .section{display:none;}
+    .section.active{display:block;}
 
-    /* Toast */
-    #toast {
-      position: fixed; bottom: 20px; right: 20px;
-      padding: 1rem 1.5rem; border-radius: var(--radius-sm);
-      color: white; font-weight: 500; box-shadow: var(--shadow-lg);
-      transform: translateY(150%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 50;
-      background: var(--text);
-    }
-    #toast.show { transform: translateY(0); }
-    
-    /* Spinner */
-    .spinner {
-      display: inline-block; width: 1.2rem; height: 1.2rem;
-      border: 2px solid rgba(0,0,0,0.1); border-top-color: currentColor;
-      border-radius: 50%; animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .empty { padding: 3rem; text-align: center; color: var(--text-muted); }
+    /* ── Cards ── */
+    .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);}
+    .card-body{padding:1.25rem;}
+    .card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border);}
+    .card-title{font-size:0.9rem;font-weight:600;}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+    .mb-4{margin-bottom:1rem;}
+    .mb-6{margin-bottom:1.5rem;}
+
+    /* ── Stat tiles ── */
+    .stat-tile{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:1.1rem 1.25rem;box-shadow:var(--shadow);}
+    .stat-tile .label{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:0.4rem;}
+    .stat-tile .value{font-size:1.6rem;font-weight:700;line-height:1;}
+    .stat-tile .sub{font-size:0.72rem;color:var(--muted);margin-top:0.3rem;}
+    .stat-tile.income{border-left:4px solid var(--success);}
+    .stat-tile.expense{border-left:4px solid var(--error);}
+    .stat-tile.net{border-left:4px solid var(--info);}
+    .stat-tile.blocked{border-left:4px solid var(--warn);}
+
+    /* ── Upload zone ── */
+    .upload-zone{border:2px dashed #d1d5db;border-radius:var(--radius);padding:2rem;text-align:center;cursor:pointer;transition:all .2s;background:white;margin-bottom:1.25rem;}
+    .upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:#f5f3ff;}
+    .upload-zone svg{width:40px;height:40px;color:#9ca3af;margin-bottom:0.75rem;}
+    .upload-zone h3{font-size:0.9rem;font-weight:600;margin-bottom:0.25rem;}
+    .upload-zone p{font-size:0.8rem;color:var(--muted);}
+
+    /* ── Tables ── */
+    .table-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;text-align:left;}
+    th{padding:0.7rem 1rem;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--bg-alt);border-bottom:1px solid var(--border);}
+    td{padding:0.8rem 1rem;font-size:0.83rem;border-bottom:1px solid var(--border);}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:#f9fafb;}
+    .cat-pill{display:inline-block;padding:0.2rem 0.55rem;border-radius:999px;font-size:0.72rem;font-weight:600;background:#e0e7ff;color:#4338ca;}
+    .cat-pill.food{background:#fef3c7;color:#92400e;}
+    .cat-pill.transport{background:#d1fae5;color:#065f46;}
+    .cat-pill.shopping{background:#fce7f3;color:#9d174d;}
+    .cat-pill.income{background:#d1fae5;color:#065f46;}
+    .cat-pill.other{background:#f3f4f6;color:#374151;}
+    .blocked-row{background:#fef2f2 !important;}
+    .blocked-row:hover td{background:#fee2e2 !important;}
+    .amt-pos{color:var(--success);font-weight:600;}
+    .amt-neg{color:var(--error);font-weight:600;}
+
+    /* ── Pagination ── */
+    .pagination{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border-top:1px solid var(--border);background:var(--bg-alt);}
+    .pagination .info{font-size:0.78rem;color:var(--muted);}
+
+    /* ── Bar chart ── */
+    .bar-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;}
+    .bar-row .cat{width:110px;font-size:0.8rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .bar-row .track{flex:1;height:10px;background:#f3f4f6;border-radius:5px;overflow:hidden;}
+    .bar-row .fill{height:100%;border-radius:5px;transition:width .4s ease;}
+    .bar-row.expense .fill{background:linear-gradient(90deg,#ef4444,#f87171);}
+    .bar-row.income .fill{background:linear-gradient(90deg,#10b981,#34d399);}
+    .bar-row .amt{width:85px;text-align:right;font-size:0.8rem;font-weight:600;}
+
+    /* ── Safety layers ── */
+    .safety-layer{border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:0.75rem;}
+    .safety-layer-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;}
+    .layer-badge{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;font-size:0.75rem;font-weight:700;flex-shrink:0;}
+    .layer1 .layer-badge{background:#fef3c7;color:#92400e;}
+    .layer2 .layer-badge{background:#dbeafe;color:#1e40af;}
+    .safety-layer h4{font-size:0.85rem;font-weight:600;}
+    .safety-layer p{font-size:0.78rem;color:var(--muted);}
+    .guard-chips{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;}
+    .guard-chip{padding:0.2rem 0.6rem;border-radius:999px;font-size:0.72rem;font-weight:600;background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;}
+    .layer1 .guard-chip{background:#fffbeb;color:#78350f;border-color:#fde68a;}
+
+    /* ── Toast ── */
+    #toast{position:fixed;bottom:1.5rem;right:1.5rem;padding:0.75rem 1.25rem;border-radius:var(--radius-sm);color:white;font-size:0.83rem;font-weight:500;box-shadow:var(--shadow-md);transform:translateY(150%);transition:transform .25s cubic-bezier(.4,0,.2,1);z-index:999;background:var(--text);}
+    #toast.show{transform:translateY(0);}
+    #toast.success{background:#065f46;}
+    #toast.error{background:#991b1b;}
+
+    /* ── Spinner ── */
+    .spinner{display:inline-block;width:1rem;height:1rem;border:2px solid rgba(0,0,0,.1);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .empty{padding:2.5rem;text-align:center;color:var(--muted);font-size:0.85rem;}
+
+    /* ── Misc ── */
+    .flex-between{display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+    .tag{display:inline-block;padding:.15rem .5rem;border-radius:999px;font-size:.7rem;font-weight:600;}
+    .tag-red{background:#fee2e2;color:#991b1b;}
+    .tag-green{background:#d1fae5;color:#065f46;}
+    .tag-yellow{background:#fef3c7;color:#78350f;}
+    .tag-blue{background:#dbeafe;color:#1e40af;}
+    code{font-family:ui-monospace,monospace;font-size:0.82rem;background:#f3f4f6;padding:.1rem .4rem;border-radius:4px;}
   </style>
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <aside class="sidebar" data-html2canvas-ignore>
-    <div class="brand">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      BudgetBot
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-icon">💰</div>
+    <div>
+      <div class="brand-name">BudgetBot</div>
+      <div class="brand-sub">AI Finance Dashboard</div>
     </div>
-    <div class="nav-links">
-      <a class="nav-link active" onclick="switchTab('dashboard')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-        Dashboard Overview
-      </a>
-      <a class="nav-link" onclick="switchTab('transactions')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-        All Transactions
-      </a>
-      <a class="nav-link" onclick="switchTab('review')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        Review Queue
-      </a>
-      <a class="nav-link" onclick="switchTab('safety')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-        AI Safety Guard
-      </a>
-      <a class="nav-link" onclick="switchTab('performance')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-        AI Performance
-      </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Main</div>
+    <button class="nav-link active" id="nav-dashboard" onclick="switchTab('dashboard')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Overview
+    </button>
+    <button class="nav-link" id="nav-transactions" onclick="switchTab('transactions')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      All Transactions
+    </button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">AI Tools</div>
+    <button class="nav-link" id="nav-review" onclick="switchTab('review')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Review Queue
+      <span class="nav-badge" id="review-badge" style="display:none">0</span>
+    </button>
+    <button class="nav-link" id="nav-safety" onclick="switchTab('safety')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      AI Safety Guard
+      <span class="nav-badge" id="safety-badge" style="display:none">0</span>
+    </button>
+    <button class="nav-link" id="nav-performance" onclick="switchTab('performance')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      AI Performance
+    </button>
+  </div>
+
+  <div class="sidebar-footer" id="backend-info">Connecting…</div>
+</aside>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main-wrapper" id="report-content">
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="page-title" id="page-title">Overview</span>
     </div>
-  </aside>
-
-  <!-- Main Content -->
-  <div class="main-wrapper" id="report-content">
-    <header class="header" data-html2canvas-ignore>
-      <div>
-        <h2 id="page-title">Dashboard Overview</h2>
+    <div class="topbar-right">
+      <div class="month-filter">
+        <label>📅</label>
+        <input type="month" id="month" onchange="onMonthChange()">
+        <button class="clear-btn" id="month-clear" onclick="clearMonth()" style="display:none" title="Clear filter">✕</button>
       </div>
-      <div class="header-actions">
-        <div style="display:flex;align-items:center;gap:0.5rem;background:var(--bg);padding:0.25rem 0.5rem;border-radius:var(--radius-sm);border:1px solid var(--border);">
-          <span style="font-size:0.875rem;color:var(--text-muted);">Month:</span>
-          <input type="month" id="month" style="border:none;background:transparent;font-family:inherit;font-size:0.875rem;color:var(--text);outline:none;" onchange="summary()">
-        </div>
-        <button class="btn btn-outline" onclick="exportPDF()">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;margin-right:8px;"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-          Export PDF
-        </button>
-      </div>
-    </header>
+      <button class="btn btn-outline btn-sm" onclick="exportPDF()">⬇ PDF</button>
+    </div>
+  </header>
 
-    <main class="content">
-      
-      <!-- Upload Card (Always visible on dashboard) -->
-      <div class="upload-card section active" id="sec-dashboard-upload" data-html2canvas-ignore>
-        <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-upload').click()">
-          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path></svg>
-          <h3 style="margin-bottom:0.5rem;color:var(--text);">Upload Bank Statement (CSV)</h3>
-          <p style="color:var(--text-muted);font-size:0.875rem;">Drag and drop or click to browse</p>
-          <input type="file" id="file-upload" accept=".csv" style="display:none;" onchange="handleFileSelect(event)">
-        </div>
-        <div id="upload-result"></div>
-      </div>
+  <!-- Content -->
+  <main class="content">
 
-      <!-- Dashboard View -->
-      <div class="section active" id="sec-dashboard">
-        <div class="card" style="margin-bottom:1.5rem;">
-          <div class="card-header">
-            <h3 class="card-title">Spending Summary</h3>
-            <button class="btn btn-outline" style="padding:0.25rem 0.5rem;font-size:0.75rem;" onclick="summary()" data-html2canvas-ignore>Refresh</button>
-          </div>
-          <div id="summary-out"><div class="empty">No data — upload a statement first.</div></div>
-        </div>
+    <!-- ── Upload (always visible on Overview) ── -->
+    <div id="sec-upload" class="section active mb-6">
+      <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/></svg>
+        <h3>Upload Bank Statement (CSV)</h3>
+        <p>Drag & drop your CSV file here, or click to browse</p>
+        <input type="file" id="file-input" accept=".csv" style="display:none" onchange="handleFile(event)">
+      </div>
+      <div id="upload-result"></div>
+    </div>
+
+    <!-- ── Overview ── -->
+    <div id="sec-dashboard" class="section active">
+
+      <!-- Stat tiles -->
+      <div class="grid-4 mb-6" id="stat-tiles">
+        <div class="stat-tile income"><div class="label">Cash Inflow</div><div class="value" id="tile-income">—</div><div class="sub" id="tile-income-sub">Income + Transfers</div></div>
+        <div class="stat-tile expense"><div class="label">Cash Outflow</div><div class="value" id="tile-expense">—</div><div class="sub">Total expenses</div></div>
+        <div class="stat-tile net"><div class="label">Net Balance</div><div class="value" id="tile-net">—</div><div class="sub" id="tile-net-sub">Inflow − Outflow</div></div>
+        <div class="stat-tile blocked"><div class="label">Threats Blocked</div><div class="value" id="tile-blocked">—</div><div class="sub">By AI Safety Guard</div></div>
       </div>
 
-      <!-- Transactions View -->
-      <div class="section" id="sec-transactions">
+      <!-- Charts row: two donuts -->
+      <div class="grid-2 mb-6">
+        <!-- Expenses donut -->
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">All Transactions</h3>
-            <button class="btn btn-outline" style="padding:0.25rem 0.5rem;font-size:0.75rem;" onclick="refreshData()">Refresh</button>
+            <span class="card-title">🔴 Expenses by Category</span>
+            <span id="chart-period" style="font-size:0.75rem;color:var(--muted);">All time</span>
           </div>
-          <div id="txns-out"><div class="empty">No transactions yet.</div></div>
-        </div>
-      </div>
-
-      <!-- Review Queue View -->
-      <div class="section" id="sec-review">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Review Queue (Low Confidence)</h3>
-          </div>
-          <div id="review-out"><div class="empty">No low-confidence items yet.</div></div>
-        </div>
-      </div>
-
-      <!-- Safety Guard View -->
-      <div class="section" id="sec-safety">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">AI Safety Guard</h3>
-            <button class="btn btn-primary" onclick="testSafety()">🧪 Run safety test</button>
-          </div>
-          <div id="safety-out"><div class="empty">Loading safety stats...</div></div>
-          <div id="safety-test-out" style="margin-top:1rem;"></div>
-        </div>
-      </div>
-
-      <!-- Performance View -->
-      <div class="section" id="sec-performance">
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">AI Performance</h3>
-              <button class="btn btn-primary" id="acc-btn" onclick="runAccuracy()">▶ Run accuracy test</button>
+          <div class="card-body" style="display:flex;align-items:center;gap:1.25rem;">
+            <div style="width:140px;height:140px;flex-shrink:0;">
+              <canvas id="donut-expense"></canvas>
             </div>
-            <div id="stats-out"><div class="empty">Upload transactions to see stats.</div></div>
-            <div id="accuracy-out" style="margin-top:1.5rem;"></div>
+            <div id="legend-expense" style="flex:1;font-size:0.78rem;"></div>
           </div>
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Failure Cases & Fixes</h3>
+        </div>
+        <!-- Income donut -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🟢 Cash Inflow by Category</span>
+            <span id="chart-period-inc" style="font-size:0.75rem;color:var(--muted);">All time</span>
+          </div>
+          <div class="card-body" style="display:flex;align-items:center;gap:1.25rem;">
+            <div style="width:140px;height:140px;flex-shrink:0;">
+              <canvas id="donut-income"></canvas>
             </div>
+            <div id="legend-income" style="flex:1;font-size:0.78rem;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Breakdown bar chart -->
+      <div class="card mb-6">
+        <div class="card-header"><span class="card-title">Category Breakdown</span></div>
+        <div class="card-body">
+          <div id="bar-chart-out"><div class="empty" style="padding:1rem;">Upload a statement to see charts.</div></div>
+        </div>
+      </div>
+
+      <!-- Top drivers -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">AI Insights</span>
+          <button class="btn btn-outline btn-sm" onclick="loadDashboard()">↻ Refresh</button>
+        </div>
+        <div class="card-body" id="insights-out">
+          <div class="empty">Upload a CSV to see AI-generated insights.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── All Transactions ── -->
+    <div id="sec-transactions" class="section">
+      <div class="card">
+        <div class="card-header flex-between">
+          <span class="card-title">All Transactions</span>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <span id="txn-month-label" style="font-size:0.75rem;color:var(--muted);"></span>
+            <button class="btn btn-outline btn-sm" onclick="loadTxns()">↻ Refresh</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div id="txns-out"><div class="empty">No transactions yet — upload a CSV first.</div></div>
+        </div>
+        <div class="pagination" id="txn-pagination" style="display:none;">
+          <span class="info" id="txn-info"></span>
+          <div style="display:flex;gap:0.5rem;">
+            <button class="btn btn-outline btn-sm" id="txn-prev" onclick="txnPrev()">◀ Prev</button>
+            <button class="btn btn-outline btn-sm" id="txn-next" onclick="txnNext()">Next ▶</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Review Queue ── -->
+    <div id="sec-review" class="section">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Review Queue <span style="font-size:0.75rem;color:var(--muted);font-weight:400;">— Low confidence classifications needing your review</span></span>
+          <button class="btn btn-outline btn-sm" onclick="loadReviewQueue()">↻ Refresh</button>
+        </div>
+        <div id="review-out"><div class="empty">No low-confidence items yet.</div></div>
+      </div>
+    </div>
+
+    <!-- ── AI Safety ── -->
+    <div id="sec-safety" class="section">
+      <div class="grid-2 mb-6">
+
+        <!-- 2-layer explanation card -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">🛡️ 2-Layer Protection Architecture</span></div>
+          <div class="card-body">
+            <div class="safety-layer layer1">
+              <div class="safety-layer-header">
+                <div class="layer-badge">1</div>
+                <div>
+                  <h4>Layer 1 — Input Validation</h4>
+                  <p>Runs first, before any AI processing.</p>
+                </div>
+              </div>
+              <p style="font-size:0.8rem;margin-bottom:0.5rem;">Enforces strict rules on raw input characters and length to block structurally malformed data <em>before it ever reaches pattern matching or the AI model</em>.</p>
+              <div class="guard-chips">
+                <span class="guard-chip">Max 255 chars</span>
+                <span class="guard-chip">Blocks &lt; &gt; { } $</span>
+                <span class="guard-chip">Blocks % ^ | ` ~</span>
+                <span class="guard-chip">Prevents XSS</span>
+              </div>
+            </div>
+
+            <div class="safety-layer layer2">
+              <div class="safety-layer-header">
+                <div class="layer-badge">2</div>
+                <div>
+                  <h4>Layer 2 — Threat Pattern Matching</h4>
+                  <p>Runs second, checks semantic patterns.</p>
+                </div>
+              </div>
+              <p style="font-size:0.8rem;margin-bottom:0.5rem;">Scans text against a library of known attack patterns. Any match immediately blocks the input — AI model is never invoked.</p>
+              <div class="guard-chips">
+                <span class="guard-chip">SQL Injection</span>
+                <span class="guard-chip">Command Injection</span>
+                <span class="guard-chip">Template Injection {{ }}</span>
+                <span class="guard-chip">Prompt Injection</span>
+              </div>
+            </div>
+
+            <div style="margin-top:0.75rem;padding:0.75rem;background:#f0fdf4;border-radius:var(--radius-sm);font-size:0.8rem;border-left:3px solid var(--success);">
+              ✅ <strong>Result:</strong> Malicious inputs are stored in DB with <code>confidence=blocked</code> for audit. They are <strong>never sent to AWS Bedrock</strong>, protecting both security and cost.
+            </div>
+          </div>
+        </div>
+
+        <!-- Live stats card -->
+        <div class="card">
+          <div class="card-header flex-between">
+            <span class="card-title">📊 Live Safety Stats</span>
+            <button class="btn btn-primary btn-sm" onclick="testSafety()">🧪 Run Safety Test</button>
+          </div>
+          <div class="card-body">
+            <div id="safety-stats-out"><div class="empty">Loading…</div></div>
+          </div>
+          <div id="safety-test-out" style="padding:0 1.25rem 1.25rem;"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── AI Performance ── -->
+    <div id="sec-performance" class="section">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header flex-between">
+            <span class="card-title">AI Accuracy</span>
+            <button class="btn btn-primary btn-sm" id="acc-btn" onclick="runAccuracy()">▶ Run test (40 txn)</button>
+          </div>
+          <div class="card-body">
+            <div id="stats-out"><div class="empty">Upload transactions to see live stats.</div></div>
+            <div id="accuracy-out" style="margin-top:1rem;"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Failure Cases & Fixes</span></div>
+          <div class="card-body">
             <div id="failures-out"><div class="empty">Run accuracy test to see failure cases.</div></div>
           </div>
         </div>
       </div>
+    </div>
 
-    </main>
-  </div>
+  </main>
+</div>
 
-  <div id="toast">Message</div>
+<div id="toast"></div>
 
-  <script>
-
-const DEFAULT_API_BASE = 'https://mlhwir8gc5.execute-api.ap-southeast-1.amazonaws.com';
-const API_BASE = (window.API_BASE || new URLSearchParams(location.search).get('api') || DEFAULT_API_BASE).replace(/\/$/, '');
-const USER_ID = (new URLSearchParams(location.search).get('user') || 'test-user-001');
+<script>
+// ══════════════════════════════════════════════
+// CONFIG & UTILS
+// ══════════════════════════════════════════════
+const DEFAULT_API = 'https://mlhwir8gc5.execute-api.ap-southeast-1.amazonaws.com';
+const API_BASE = (window.API_BASE || new URLSearchParams(location.search).get('api') || DEFAULT_API).replace(/\/$/, '');
+const USER_ID = new URLSearchParams(location.search).get('user') || 'test-user-001';
+const PAGE_SIZE = 30;
 
 function $(id) { return document.getElementById(id); }
-function fmt(n) { return new Intl.NumberFormat('en-US').format(Math.round(n)); }
-function fmtCompact(n) {
-  const abs = Math.abs(n);
-  if (abs >= 1e9) return (n/1e9).toFixed(1) + 'B';
-  if (abs >= 1e6) return (n/1e6).toFixed(2) + 'M';
-  if (abs >= 1e3) return (n/1e3).toFixed(0) + 'K';
+function fmt(n) { return new Intl.NumberFormat('vi-VN').format(Math.round(n)); }
+function fmtC(n) {
+  const a = Math.abs(n);
+  if (a >= 1e9) return (n/1e9).toFixed(1)+'B';
+  if (a >= 1e6) return (n/1e6).toFixed(1)+'M';
+  if (a >= 1e3) return (n/1e3).toFixed(0)+'K';
   return fmt(n);
 }
+
 function toast(msg, type='') {
-  const toastEl = $('toast');
-  toastEl.textContent = msg;
-  toastEl.style.background = type === 'error' ? 'var(--error)' : type === 'success' ? 'var(--success)' : 'var(--text)';
-  toastEl.classList.add('show');
-  clearTimeout(toastEl._t);
-  toastEl._t = setTimeout(() => toastEl.classList.remove('show'), 3000);
-}
-function logDebug(label, data) {
-  // Debug logging suppressed in new dashboard UI
-  console.debug(label, data);
+  const el = $('toast');
+  el.className = type ? `show ${type}` : 'show';
+  el.textContent = msg;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.className = '', 3000);
 }
 
 async function call(path, opts={}) {
   opts.headers = Object.assign({'X-User-Id': USER_ID}, opts.headers || {});
-  const r = await fetch(API_BASE + path, opts);
-  const text = await r.text();
-  let body; try { body = JSON.parse(text); } catch { body = text; }
-  logDebug(`${opts.method || 'GET'} ${path}`, body);
-  return {ok: r.ok, status: r.status, body};
+  try {
+    const r = await fetch(API_BASE + path, opts);
+    const text = await r.text();
+    let body; try { body = JSON.parse(text); } catch { body = text; }
+    return { ok: r.ok, status: r.status, body };
+  } catch(e) {
+    return { ok: false, status: 0, body: { detail: e.message } };
+  }
 }
 
-async function loadStatus() {
-  // Status display removed in new dashboard – backends shown in page title area
-  await call('/health');
+// ══════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════
+const TITLES = { dashboard:'Overview', transactions:'All Transactions', review:'Review Queue', safety:'AI Safety Guard', performance:'AI Performance' };
+
+function switchTab(tabId, e) {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  $('nav-' + tabId).classList.add('active');
+  $('page-title').textContent = TITLES[tabId];
+
+  // Show/hide sections
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  if (tabId === 'dashboard') {
+    $('sec-upload').classList.add('active');
+    $('sec-dashboard').classList.add('active');
+  } else {
+    $('sec-transactions') && ($('sec-transactions').classList.remove('active'));
+    $('sec-' + tabId).classList.add('active');
+  }
+
+  // Lazy-load section data
+  if (tabId === 'transactions') loadTxns();
+  if (tabId === 'review') loadReviewQueue();
+  if (tabId === 'safety') { loadSafetyStats(); }
+  if (tabId === 'performance') loadStats();
 }
 
-// ---------- Upload ----------
-// (Drag & drop handled by the second script block below)
+// ══════════════════════════════════════════════
+// MONTH FILTER
+// ══════════════════════════════════════════════
+function getMonth() { return $('month').value || ''; }
+
+function onMonthChange() {
+  const m = getMonth();
+  $('month-clear').style.display = m ? 'inline' : 'none';
+  $('chart-period').textContent = m ? formatMonth(m) : 'All time';
+  loadDashboard();
+  // If transactions tab is visible, reload too
+  if ($('sec-transactions').classList.contains('active')) loadTxns();
+}
+
+function clearMonth() {
+  $('month').value = '';
+  $('month-clear').style.display = 'none';
+  $('chart-period').textContent = 'All time';
+  loadDashboard();
+  if ($('sec-transactions').classList.contains('active')) loadTxns();
+}
+
+function formatMonth(v) {
+  if (!v) return '';
+  const [y, m] = v.split('-').map(Number);
+  return new Date(y, m-1).toLocaleDateString('en-US', {month:'long', year:'numeric'});
+}
+
+// ══════════════════════════════════════════════
+// UPLOAD
+// ══════════════════════════════════════════════
+const dz = $('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); if (e.dataTransfer.files[0]) doUpload(e.dataTransfer.files[0]); });
+
+function handleFile(e) { if (e.target.files[0]) doUpload(e.target.files[0]); }
 
 async function doUpload(file) {
-  $('upload-result').innerHTML = `<p class="muted" style="margin:0.8rem 0 0;"><span class="spinner"></span> Categorizing ${file.name}…</p>`;
+  $('upload-result').innerHTML = `<p style="padding:.6rem 0;color:var(--muted);"><span class="spinner"></span> Uploading & categorizing <strong>${file.name}</strong>…</p>`;
   const fd = new FormData(); fd.append('file', file);
-  const res = await call('/upload', {method: 'POST', body: fd});
+  const res = await call('/upload', {method:'POST', body:fd});
   if (!res.ok) {
-    toast(`Upload failed: ${res.body.detail || res.status}`, 'error');
-    $('upload-result').innerHTML = `<p style="color:var(--error); margin:0.8rem 0 0;">${res.body.detail || 'Upload failed'}</p>`;
+    toast(res.body.detail || 'Upload failed', 'error');
+    $('upload-result').innerHTML = `<p style="color:var(--error);padding:.5rem 0;">❌ ${res.body.detail || 'Upload failed'}</p>`;
     return;
   }
   const b = res.body;
   $('upload-result').innerHTML = `
-    <div style="margin-top:0.8rem; padding:0.8rem; background:#f0fdf4; border-radius:var(--radius-sm); border-left:3px solid var(--success); font-size:0.88rem;">
-      ✓ <strong>${b.filename}</strong> — ${b.rows_inserted} of ${b.rows_parsed} rows inserted &amp; categorized.
-      ${b.low_confidence_count ? `${b.low_confidence_count} sent to review.` : 'No low-confidence review items.'}
-      ${b.safety_blocked ? `<br><span style="color:var(--error);">🛡️ ${b.safety_blocked} malicious input(s) blocked by AI Safety Guard.</span>` : ''}
+    <div style="padding:.75rem 1rem;background:#f0fdf4;border-radius:var(--radius-sm);border-left:3px solid var(--success);margin-top:.75rem;font-size:.82rem;">
+      ✅ <strong>${b.filename}</strong> — <strong>${b.rows_inserted}</strong> of ${b.rows_parsed} rows categorized.
+      ${b.low_confidence_count ? `<span style="color:var(--warn)"> · ${b.low_confidence_count} sent to Review Queue</span>` : ''}
+      ${b.safety_blocked ? `<span style="color:var(--error)"> · 🛡️ ${b.safety_blocked} threat(s) blocked</span>` : ''}
     </div>`;
-  toast(`Categorized ${b.rows_inserted} transactions`, 'success');
-  summary();
-  refreshData();
+  toast(`✅ ${b.rows_inserted} transactions categorized`, 'success');
+  loadDashboard();
+  loadSafetyStats();
+  updateNavBadges();
 }
 
-// ---------- Summary ----------
-async function summary() {
-  const m = $('month').value.trim();
-  const url = '/summary' + (m ? '?month=' + encodeURIComponent(m) : '');
-  $('summary-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loading…</div>';
-  const res = await call(url);
-  if (!res.ok) { $('summary-out').innerHTML = `<p style="color:var(--error);">${res.body.detail || 'Error'}</p>`; return; }
-  const {total_spend, by_category, top_3_drivers} = res.body;
-  if (!by_category || !Object.keys(by_category).length) {
-    $('summary-out').innerHTML = '<div class="empty">No data — upload a statement first.</div>';
+// ══════════════════════════════════════════════
+// DASHBOARD / OVERVIEW
+// ══════════════════════════════════════════════
+const _charts = {};
+const CHART_COLORS = ['#6366f1','#ec4899','#f59e0b','#10b981','#3b82f6','#ef4444','#8b5cf6','#14b8a6','#f97316','#06b6d4'];
+
+function renderDonut(canvasId, cats, colors, legendId, isIncome) {
+  if (_charts[canvasId]) { _charts[canvasId].destroy(); delete _charts[canvasId]; }
+  if (!cats.length) {
+    document.getElementById(legendId).innerHTML = '<div style="font-size:.8rem;color:var(--muted);text-align:center;padding:1rem;">' + (isIncome ? 'No income' : 'No expenses') + ' recorded.</div>';
     return;
   }
-  const incomes = Object.entries(by_category).filter(([, v]) => v.total > 0);
-  const expenses = Object.entries(by_category).filter(([, v]) => v.total < 0);
-  const incomeTotal = incomes.reduce((s, [, v]) => s + v.total, 0);
-  const expenseTotal = expenses.reduce((s, [, v]) => s + Math.abs(v.total), 0);
-  const net = incomeTotal - expenseTotal;
-  const maxBar = Math.max(...Object.values(by_category).map(v => Math.abs(v.total)), 1);
-
-  // Sort: expenses largest first, then incomes
-  const sorted = [
-    ...expenses.sort((a, b) => a[1].total - b[1].total),
-    ...incomes.sort((a, b) => b[1].total - a[1].total),
-  ];
-
-  $('summary-out').innerHTML = `
-    <div class="summary-totals">
-      <div class="total-tile income"><div class="label">Income</div><div class="value">${fmtCompact(incomeTotal)}</div></div>
-      <div class="total-tile expense"><div class="label">Expenses</div><div class="value">${fmtCompact(expenseTotal)}</div></div>
-      <div class="total-tile net"><div class="label">Net</div><div class="value" style="color:${net >= 0 ? 'var(--accent)' : 'var(--error)'};">${net >= 0 ? '+' : ''}${fmtCompact(net)}</div></div>
-    </div>
-    <div class="chart">
-      ${sorted.map(([cat, v]) => {
-        const pct = Math.round(Math.abs(v.total) / maxBar * 100);
-        const cls = v.total >= 0 ? 'income' : 'expense';
-        return `<div class="bar-row ${cls}">
-          <div class="cat">${cat} <span class="muted" style="font-size:.78rem;">(${v.count})</span></div>
-          <div class="track"><div class="fill" style="width:${pct}%"></div></div>
-          <div class="amt">${v.total >= 0 ? '+' : ''}${fmtCompact(v.total)}</div>
-        </div>`;
-      }).join('')}
-    </div>
-    ${top_3_drivers && top_3_drivers.length ? `
-      <p class="muted" style="font-size:0.82rem; margin-top:1rem;">
-        🎯 Top drivers: ${top_3_drivers.map(d => `<strong>${d.category}</strong> (${fmtCompact(d.total)})`).join(', ')}
-      </p>` : ''
+  const data = cats.map(([,v]) => Math.abs(v.total));
+  const total = data.reduce((a,b) => a+b, 0);
+  _charts[canvasId] = new Chart(document.getElementById(canvasId), {
+    type: 'doughnut',
+    data: { labels: cats.map(([k])=>k), datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
+    options: {
+      responsive: true, maintainAspectRatio: true, cutout: '65%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ' ' + fmtC(ctx.raw) + ' VND (' + Math.round(ctx.raw/total*100) + '%)' } }
+      }
     }
-  `;
+  });
+  document.getElementById(legendId).innerHTML = cats.map(([cat, v], i) =>
+    '<div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem;">' +
+    '<div style="width:9px;height:9px;border-radius:2px;background:' + colors[i] + ';flex-shrink:0;"></div>' +
+    '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem;">' + cat + '</span>' +
+    '<span style="font-weight:600;font-size:.78rem;color:' + (isIncome?'var(--success)':'var(--error)') + ';">' + fmtC(Math.abs(v.total)) + '</span>' +
+    '<span style="font-size:.68rem;color:var(--muted);width:30px;text-align:right;">' + Math.round(Math.abs(v.total)/total*100) + '%</span>' +
+    '</div>'
+  ).join('');
 }
 
-// ---------- Transactions ----------
-let allTxns = [];
-let txnPage = 0;
-const PAGE_SIZE = 50;
+async function loadDashboard() {
+  const m = getMonth();
+  const url = '/summary' + (m ? '?month='+encodeURIComponent(m) : '');
+  const res = await call(url);
+
+  if (!res.ok || !res.body.by_category || !Object.keys(res.body.by_category).length) {
+    $('bar-chart-out').innerHTML = '<div class="empty" style="padding:1rem;">No data yet.</div>';
+    $('insights-out').innerHTML = '<div class="empty">Upload a CSV to see AI-generated insights.</div>';
+    // Reset tiles
+    ['tile-income','tile-expense','tile-net','tile-blocked'].forEach(id => $(id).textContent = '—');
+    return;
+  }
+
+  const { by_category, top_3_drivers, total_spend } = res.body;
+  const income = Object.entries(by_category).filter(([,v]) => v.total > 0).reduce((s,[,v]) => s+v.total, 0);
+  const expense = Object.entries(by_category).filter(([,v]) => v.total < 0).reduce((s,[,v]) => s+Math.abs(v.total), 0);
+  const net = income - expense;
+
+  // Tiles — separate true income from transfers
+  const realIncome = Object.entries(by_category).filter(([k,v]) => v.total > 0 && k.toLowerCase() !== 'transfer').reduce((s,[,v]) => s+v.total, 0);
+  const transfers = Object.entries(by_category).filter(([k,v]) => v.total > 0 && k.toLowerCase() === 'transfer').reduce((s,[,v]) => s+v.total, 0);
+  $('tile-income').textContent = '+' + fmtC(income);
+  $('tile-income').style.color = 'var(--success)';
+  if (transfers > 0) {
+    $('tile-income-sub').textContent = `Income ${fmtC(realIncome)} + Transfer ${fmtC(transfers)}`;
+  } else {
+    $('tile-income-sub').textContent = 'Salary, bonuses & income';
+  }
+  $('tile-expense').textContent = '-' + fmtC(expense);
+  $('tile-expense').style.color = 'var(--error)';
+  $('tile-net').textContent = (net >= 0 ? '+' : '') + fmtC(net);
+  $('tile-net').style.color = net >= 0 ? 'var(--success)' : 'var(--error)';
+  $('tile-net-sub').textContent = `${fmtC(income)} in − ${fmtC(expense)} out`;
+
+  // Expense donut
+  const expCats = Object.entries(by_category).filter(([,v]) => v.total < 0).sort((a,b) => a[1].total - b[1].total);
+  const expColors = ['#ef4444','#f97316','#f59e0b','#ec4899','#8b5cf6','#6366f1','#14b8a6','#06b6d4'];
+  renderDonut('donut-expense', expCats, expColors, 'legend-expense', false);
+
+  // Income donut
+  const incCats = Object.entries(by_category).filter(([,v]) => v.total > 0).sort((a,b) => b[1].total - a[1].total);
+  const incColors = ['#10b981','#3b82f6','#22d3ee','#34d399','#6ee7b7','#93c5fd'];
+  renderDonut('donut-income', incCats, incColors, 'legend-income', true);
+
+  // Sync period label on both
+  const periodLabel = $('month').value ? formatMonth($('month').value) : 'All time';
+  $('chart-period').textContent = periodLabel;
+  $('chart-period-inc').textContent = periodLabel;
+
+  // Bar chart
+  const allCats = Object.entries(by_category).sort((a,b) => a[1].total - b[1].total);
+  const maxAbs = Math.max(...allCats.map(([,v]) => Math.abs(v.total)), 1);
+  $('bar-chart-out').innerHTML = allCats.map(([cat, v]) => {
+    const pct = Math.round(Math.abs(v.total) / maxAbs * 100);
+    const cls = v.total >= 0 ? 'income' : 'expense';
+    return `<div class="bar-row ${cls}">
+      <div class="cat" title="${cat}">${cat}</div>
+      <div class="track"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="amt" style="color:${v.total>=0?'var(--success)':'var(--error)'};">${v.total>=0?'+':''}${fmtC(v.total)}</div>
+    </div>`;
+  }).join('');
+
+  // Insights
+  const topExpenses = Object.entries(by_category).filter(([,v])=>v.total<0).sort((a,b)=>a[1].total-b[1].total).slice(0,3);
+  $('insights-out').innerHTML = `
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      ${topExpenses.map(([cat,v],i) => `
+        <div style="flex:1;min-width:150px;padding:.75rem;background:var(--bg-alt);border-radius:var(--radius-sm);">
+          <div style="font-size:.7rem;font-weight:600;color:var(--muted);margin-bottom:.3rem;">TOP EXPENSE #${i+1}</div>
+          <div style="font-size:.9rem;font-weight:600;">${cat}</div>
+          <div style="font-size:.8rem;color:var(--error);font-weight:700;">${fmtC(Math.abs(v.total))} VND</div>
+          <div style="font-size:.72rem;color:var(--muted);">${v.count} transaction(s)</div>
+        </div>`).join('')}
+    </div>
+    ${top_3_drivers && top_3_drivers.length ? `<p style="margin-top:.75rem;font-size:.8rem;color:var(--muted);">🎯 Biggest drivers: ${top_3_drivers.map(d=>`<strong>${d.category}</strong> (${fmtC(d.total)})`).join(', ')}</p>` : ''}`;
+}
+
+// ══════════════════════════════════════════════
+// ALL TRANSACTIONS
+// ══════════════════════════════════════════════
+let allTxns = [], txnPage = 0;
 
 async function loadTxns() {
+  const m = getMonth();
+  $('txn-month-label').textContent = m ? formatMonth(m) : 'All time';
   $('txns-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loading…</div>';
-  const res = await call('/transactions');
-  if (!res.ok || !res.body.transactions || !res.body.transactions.length) {
+  const url = '/transactions' + (m ? '?month='+encodeURIComponent(m) : '');
+  const res = await call(url);
+  if (!res.ok || !res.body.transactions?.length) {
     allTxns = [];
-    $('txns-out').innerHTML = '<div class="empty">No transactions yet.</div>';
+    $('txns-out').innerHTML = '<div class="empty">No transactions found.</div>';
+    $('txn-pagination').style.display = 'none';
     return;
   }
   allTxns = res.body.transactions;
   txnPage = 0;
-  renderTxnPage();
+  renderTxns();
 }
 
-function renderTxnPage() {
-  const t = allTxns;
-  const totalPages = Math.ceil(t.length / PAGE_SIZE);
+function renderTxns() {
+  const total = allTxns.length;
+  const pages = Math.ceil(total / PAGE_SIZE);
   const start = txnPage * PAGE_SIZE;
-  const end = Math.min(start + PAGE_SIZE, t.length);
-  const page = t.slice(start, end);
+  const end = Math.min(start + PAGE_SIZE, total);
+  const page = allTxns.slice(start, end);
 
-  $('txns-out').innerHTML = `
-    <table>
-      <thead><tr><th>Date</th><th>Description</th><th>Category</th><th style="text-align:right;">Amount</th></tr></thead>
-      <tbody>
-        ${page.map(r => `
-          <tr style="background:${r.confidence === 'blocked' ? '#fef2f2' : ''};">
-            <td>${r.date}</td>
-            <td>${(r.description || '').slice(0, 50)}</td>
-            <td>
-              ${r.confidence === 'blocked' 
-                ? '<span style="color:#ef4444;font-weight:700;">🚫 BLOCKED</span>' 
-                : `<span class="cat-pill">${r.category}</span>`}
-            </td>
-            <td class="amt ${r.amount < 0 ? 'neg' : 'pos'}">${r.amount >= 0 ? '+' : ''}${fmt(r.amount)}</td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>
-    ${t.length > PAGE_SIZE ? `
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.6rem;">
-        <button class="ghost" style="min-height:34px;padding:0.3rem 0.8rem;font-size:0.85rem;" onclick="txnPrev()" ${txnPage === 0 ? 'disabled' : ''}>◀ Prev</button>
-        <span class="muted" style="font-size:0.8rem;">Showing ${start + 1}–${end} of ${t.length}</span>
-        <button class="ghost" style="min-height:34px;padding:0.3rem 0.8rem;font-size:0.85rem;" onclick="txnNext()" ${txnPage >= totalPages - 1 ? 'disabled' : ''}>Next ▶</button>
-      </div>
-    ` : ''}
-  `;
+  $('txns-out').innerHTML = `<table>
+    <thead><tr><th>Date</th><th>Description</th><th>Category</th><th style="text-align:right;">Amount (VND)</th></tr></thead>
+    <tbody>${page.map(r => {
+      const blocked = r.confidence === 'blocked';
+      return `<tr class="${blocked?'blocked-row':''}">
+        <td style="white-space:nowrap;">${r.date}</td>
+        <td>${blocked ? `<span style="color:var(--error)">🚫</span> ` : ''}${(r.description||'').slice(0,55)}</td>
+        <td>${blocked ? '<span class="tag tag-red">BLOCKED</span>' : `<span class="cat-pill">${r.category}</span>`}</td>
+        <td style="text-align:right;" class="${r.amount>=0?'amt-pos':'amt-neg'}">${r.amount>=0?'+':''}${fmt(r.amount)}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+
+  if (total > PAGE_SIZE) {
+    $('txn-pagination').style.display = 'flex';
+    $('txn-info').textContent = `Showing ${start+1}–${end} of ${total} transactions`;
+    $('txn-prev').disabled = txnPage === 0;
+    $('txn-next').disabled = txnPage >= pages - 1;
+  } else {
+    $('txn-pagination').style.display = 'none';
+  }
 }
 
-function txnPrev() { if (txnPage > 0) { txnPage--; renderTxnPage(); } }
-function txnNext() { if ((txnPage + 1) * PAGE_SIZE < allTxns.length) { txnPage++; renderTxnPage(); } }
+function txnPrev() { if (txnPage > 0) { txnPage--; renderTxns(); } }
+function txnNext() { if ((txnPage+1)*PAGE_SIZE < allTxns.length) { txnPage++; renderTxns(); } }
 
+// ══════════════════════════════════════════════
+// REVIEW QUEUE
+// ══════════════════════════════════════════════
 async function loadReviewQueue() {
   $('review-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loading…</div>';
   const res = await call('/review-queue');
-  if (!res.ok || !res.body.items || !res.body.items.length) {
-    $('review-out').innerHTML = '<div class="empty">No low-confidence items yet.</div>';
+  if (!res.ok || !res.body.items?.length) {
+    $('review-out').innerHTML = '<div class="empty">✅ No low-confidence items — AI is performing well!</div>';
+    updateNavBadge('review-badge', 0);
     return;
   }
-  const cats = ['Food','Transport','Shopping','Utilities','Entertainment','Health','Subscriptions','Income','Transfer','Other'];
   const items = res.body.items;
-  $('review-out').innerHTML = `
-    <table>
-      <thead><tr><th>Date</th><th>Description</th><th>AI Suggested</th><th>Correct to</th><th style="text-align:right;">Amount</th><th></th></tr></thead>
-      <tbody>
-        ${items.slice(0, 20).map((r, i) => `
-          <tr id="review-row-${i}">
-            <td>${r.date}</td>
-            <td>${(r.description || '').slice(0, 40)}</td>
-            <td><span class="cat-pill">${r.category}</span></td>
-            <td>
-              <select id="review-cat-${i}" style="font:inherit;padding:0.3rem 0.4rem;border:1px solid var(--border);border-radius:var(--radius-sm);min-width:110px;">
-                ${cats.map(c => `<option value="${c}" ${c === r.category ? 'selected' : ''}>${c}</option>`).join('')}
-              </select>
-            </td>
-            <td class="amt ${r.amount < 0 ? 'neg' : 'pos'}">${r.amount >= 0 ? '+' : ''}${fmt(r.amount)}</td>
-            <td><button class="primary" style="min-height:34px;padding:0.3rem 0.7rem;font-size:0.8rem;" onclick="correctTransaction(${i}, '${(r.sk || '').replace(/'/g, "\\'")}')">✓ Correct</button></td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>
-    ${items.length > 20 ? `<p class="muted" style="font-size:0.78rem; margin-top:0.5rem;">Showing 20 of ${items.length}</p>` : ''}
-  `;
+  updateNavBadge('review-badge', items.length);
+  const cats = ['Food','Transport','Shopping','Utilities','Entertainment','Health','Subscriptions','Income','Transfer','Other'];
+  $('review-out').innerHTML = `<table>
+    <thead><tr><th>Date</th><th>Description</th><th>AI Suggested</th><th>Correct to</th><th style="text-align:right;">Amount</th><th></th></tr></thead>
+    <tbody>${items.slice(0,20).map((r,i) => `
+      <tr id="review-row-${i}">
+        <td style="white-space:nowrap;">${r.date}</td>
+        <td>${(r.description||'').slice(0,40)}</td>
+        <td><span class="cat-pill">${r.category}</span></td>
+        <td><select id="review-cat-${i}" style="font:inherit;font-size:.8rem;padding:.25rem .4rem;border:1px solid var(--border);border-radius:var(--radius-sm);">
+          ${cats.map(c=>`<option value="${c}" ${c===r.category?'selected':''}>${c}</option>`).join('')}
+        </select></td>
+        <td style="text-align:right;" class="${r.amount>=0?'amt-pos':'amt-neg'}">${r.amount>=0?'+':''}${fmt(r.amount)}</td>
+        <td><button class="btn btn-primary btn-sm" onclick="correctTxn(${i},'${(r.sk||'').replace(/'/g,"\\'")}')">✓ Correct</button></td>
+      </tr>`).join('')}</tbody>
+  </table>
+  ${items.length > 20 ? `<div style="padding:.75rem 1rem;font-size:.78rem;color:var(--muted);">Showing 20 of ${items.length}</div>` : ''}`;
 }
 
-async function correctTransaction(idx, sk) {
-  const sel = $('review-cat-' + idx);
-  const newCat = sel.value;
+async function correctTxn(idx, sk) {
+  const sel = $('review-cat-'+idx);
   const btn = sel.closest('tr').querySelector('button');
-  btn.disabled = true;
-  btn.textContent = '⏳';
-  const res = await call('/correct', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({sk: sk, new_category: newCat}),
-  });
+  btn.disabled = true; btn.textContent = '⏳';
+  const res = await call('/correct', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sk,new_category:sel.value})});
   if (res.ok && res.body.corrected) {
-    const row = $('review-row-' + idx);
-    row.style.background = '#f0fdf4';
-    row.querySelector('.cat-pill').textContent = newCat;
-    btn.textContent = '✓ Done';
-    btn.style.background = 'var(--success)';
-    toast(`Corrected → ${newCat}`, 'success');
+    $('review-row-'+idx).style.background = '#f0fdf4';
+    btn.textContent = '✓ Done'; btn.style.background = 'var(--success)';
+    toast(`Corrected → ${sel.value}`, 'success');
   } else {
-    btn.disabled = false;
-    btn.textContent = '✓ Correct';
+    btn.disabled = false; btn.textContent = '✓ Correct';
     toast(res.body.error || 'Correction failed', 'error');
   }
 }
 
-function refreshData() {
-  loadTxns();
-  loadReviewQueue();
-  loadStats();
-}
-
-async function loadStats() {
+// ══════════════════════════════════════════════
+// AI SAFETY
+// ══════════════════════════════════════════════
+async function loadSafetyStats() {
+  $('safety-stats-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loading…</div>';
   const res = await call('/stats');
   if (!res.ok || !res.body.total) {
-    $('stats-out').innerHTML = '<div class="empty">Upload transactions to see AI performance.</div>';
+    $('safety-stats-out').innerHTML = '<div class="empty">Upload transactions to see safety stats.</div>';
+    $('tile-blocked').textContent = '0';
     return;
   }
   const s = res.body;
-  const conf = s.confidence || {};
-  const pct = s.confidence_pct || {};
-  const cats = s.by_category || {};
-  const confColors = {high: '#22c55e', medium: '#f59e0b', low: '#ef4444', human: '#3b82f6'};
-
-  $('stats-out').innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:0.6rem;margin-bottom:1rem;">
-      <div style="text-align:center;padding:0.6rem;background:#f0fdf4;border-radius:var(--radius-sm);">
-        <div style="font-size:1.5rem;font-weight:700;color:#22c55e;">${conf.high || 0}</div>
-        <div style="font-size:0.75rem;color:var(--muted);">High conf.</div>
-      </div>
-      <div style="text-align:center;padding:0.6rem;background:#fffbeb;border-radius:var(--radius-sm);">
-        <div style="font-size:1.5rem;font-weight:700;color:#f59e0b;">${conf.medium || 0}</div>
-        <div style="font-size:0.75rem;color:var(--muted);">Medium</div>
-      </div>
-      <div style="text-align:center;padding:0.6rem;background:#fef2f2;border-radius:var(--radius-sm);">
-        <div style="font-size:1.5rem;font-weight:700;color:#ef4444;">${conf.low || 0}</div>
-        <div style="font-size:0.75rem;color:var(--muted);">Low</div>
-      </div>
-      <div style="text-align:center;padding:0.6rem;background:#eff6ff;border-radius:var(--radius-sm);">
-        <div style="font-size:1.5rem;font-weight:700;color:#3b82f6;">${conf.human || 0}</div>
-        <div style="font-size:0.75rem;color:var(--muted);">User corrected</div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:1rem;">
-      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;">Confidence distribution (${s.total} transactions)</div>
-      <div style="display:flex;height:24px;border-radius:var(--radius-sm);overflow:hidden;background:var(--bg-alt);">
-        ${Object.entries(conf).filter(([,v]) => v > 0).map(([k,v]) =>
-          `<div style="width:${(v/s.total*100)}%;background:${confColors[k]};display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.7rem;font-weight:600;">${pct[k]}%</div>`
-        ).join('')}
-      </div>
-    </div>
-
-    <div>
-      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;">Categories</div>
-      ${Object.entries(cats).map(([cat, count]) => {
-        const pctVal = Math.round(count / s.total * 100);
-        return `<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;font-size:0.82rem;">
-          <span style="min-width:100px;">${cat}</span>
-          <div style="flex:1;height:16px;background:var(--bg-alt);border-radius:3px;overflow:hidden;">
-            <div style="width:${pctVal}%;height:100%;background:var(--accent);border-radius:3px;transition:width 0.3s;"></div>
-          </div>
-          <span class="muted" style="min-width:60px;text-align:right;">${count} (${pctVal}%)</span>
-        </div>`;
-      }).join('')}
-    </div>
-  `;
-  // Also update Section 7 safety stats
-  renderSafetyFromStats(s);
-}
-
-async function runAccuracy() {
-  const btn = $('acc-btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Running 40 transactions...';
-  $('accuracy-out').innerHTML = '<div class="empty"><span class="spinner"></span> Testing AI on 40 labeled transactions...</div>';
-
-  const res = await call('/accuracy');
-  btn.disabled = false;
-  btn.textContent = '▶ Run accuracy test (40 txn)';
-
-  if (!res.ok || !res.body.total) {
-    $('accuracy-out').innerHTML = '<div class="empty" style="color:var(--error);">Accuracy test failed.</div>';
-    return;
-  }
-
-  const d = res.body;
-  const accColor = d.accuracy >= 90 ? '#22c55e' : d.accuracy >= 70 ? '#f59e0b' : '#ef4444';
-  const cats = Object.entries(d.per_category).sort((a, b) => b[1].f1 - a[1].f1);
-
-  $('accuracy-out').innerHTML = `
-    <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;">
-      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
-        <div style="text-align:center;padding:0.8rem 1.2rem;background:${accColor}15;border-radius:var(--radius-sm);border:2px solid ${accColor};">
-          <div style="font-size:2rem;font-weight:800;color:${accColor};">${d.accuracy}%</div>
-          <div style="font-size:0.75rem;color:var(--muted);">Accuracy</div>
-        </div>
-        <div style="font-size:0.85rem;">
-          <div><strong>${d.correct}</strong> / ${d.total} correct</div>
-          <div class="muted">Backend: <strong>${d.backend}</strong></div>
-          <div class="muted">${d.errors.length} misclassified</div>
-        </div>
-      </div>
-
-      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;">Precision / Recall per category</div>
-      <table style="font-size:0.8rem;">
-        <thead><tr><th>Category</th><th>TP</th><th>FP</th><th>FN</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead>
-        <tbody>
-          ${cats.map(([cat, m]) => `
-            <tr>
-              <td><span class="cat-pill">${cat}</span></td>
-              <td>${m.tp}</td><td>${m.fp}</td><td>${m.fn}</td>
-              <td style="color:${m.precision >= 0.8 ? '#22c55e' : m.precision >= 0.5 ? '#f59e0b' : '#ef4444'};font-weight:600;">${m.precision.toFixed(2)}</td>
-              <td style="color:${m.recall >= 0.8 ? '#22c55e' : m.recall >= 0.5 ? '#f59e0b' : '#ef4444'};font-weight:600;">${m.recall.toFixed(2)}</td>
-              <td style="font-weight:600;">${m.f1.toFixed(2)}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-
-      ${d.errors.length ? `
-        <div style="font-size:0.8rem;color:var(--muted);margin:0.8rem 0 0.3rem;">Misclassified (${d.errors.length})</div>
-        <div style="max-height:200px;overflow-y:auto;">
-          ${d.errors.map(e => `
-            <div style="font-size:0.78rem;padding:0.3rem 0;border-bottom:1px solid var(--bg-alt);display:flex;gap:0.5rem;align-items:center;">
-              <span style="flex:1;">${e.description}</span>
-              <span class="cat-pill" style="background:#fef2f2;color:#991b1b;">AI: ${e.predicted}</span>
-              <span>→</span>
-              <span class="cat-pill" style="background:#f0fdf4;color:#166534;">Human: ${e.human}</span>
-            </div>
-          `).join('')}
-        </div>
-      ` : '<div style="margin-top:0.5rem;color:var(--success);font-weight:600;">✓ Perfect accuracy — no errors!</div>'}
-    </div>
-  `;
-
-  // Also render Section 6 — Failure Cases from real errors
-  if (d.errors.length) {
-    $('failures-out').innerHTML = `
-      <div style="display:flex;flex-direction:column;gap:0.8rem;">
-        <div style="font-size:0.82rem;padding:0.6rem;background:var(--bg-alt);border-radius:var(--radius-sm);">
-          <strong>📊 ${d.errors.length} failure cases</strong> found from ${d.total} test transactions (Backend: <strong>${d.backend}</strong>, Accuracy: <strong>${d.accuracy}%</strong>)
-        </div>
-        ${d.errors.map((e, i) => `
-          <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.8rem;border-left:3px solid var(--error);">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
-              <strong>Case ${i+1}: ${e.description}</strong>
-              <span class="cat-pill" style="background:#fee2e2;color:#991b1b;">Misclassified</span>
-            </div>
-            <table style="font-size:0.82rem;">
-              <tr><td style="color:var(--muted);width:80px;">AI said</td><td><span class="cat-pill">${e.predicted}</span> (confidence: ${e.confidence})</td></tr>
-              <tr><td style="color:var(--muted);">Human</td><td><span class="cat-pill" style="background:#f0fdf4;color:#166534;">${e.human}</span></td></tr>
-              <tr><td style="color:var(--muted);">Fix</td><td>✅ ${e.confidence === 'low' ? 'Low confidence → Review Queue → user corrects' : 'Improve AI prompt or add keyword'}</td></tr>
-            </table>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  } else {
-    $('failures-out').innerHTML = '<div style="padding:1rem;background:#f0fdf4;border-radius:var(--radius-sm);color:#166534;font-weight:600;">✓ No failure cases — AI classified all 40 transactions correctly!</div>';
-  }
-}
-
-function loadSafety() {
-  // Render safety stats from /stats data (called after loadStats)
-}
-
-function renderSafetyFromStats(s) {
-  if (!s || !s.total) {
-    $('safety-out').innerHTML = '<div class="empty">Upload transactions to see safety stats.</div>';
-    return;
-  }
   const blocked = s.blocked_count || 0;
   const items = s.blocked_items || [];
-  const guards = ['SQL Injection', 'Command Injection', 'Template Injection', 'Prompt Injection'];
+  $('tile-blocked').textContent = blocked > 0 ? '🚫 '+blocked : '0';
 
-  $('safety-out').innerHTML = `
-    <div style="padding:0.8rem;background:var(--bg-alt);border-radius:var(--radius-sm);font-size:0.85rem;">
-      <strong>🛡️ Active protections:</strong>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.5rem;margin-top:0.5rem;">
-        ${guards.map(g => `<div style="padding:0.4rem 0.6rem;background:#f0fdf4;border-radius:4px;border-left:3px solid #22c55e;">${g} Guard</div>`).join('')}
+  updateNavBadge('safety-badge', blocked);
+
+  $('safety-stats-out').innerHTML = `
+    <div style="display:flex;gap:1rem;margin-bottom:1rem;">
+      <div style="text-align:center;padding:.75rem 1.25rem;background:${blocked>0?'#fef2f2':'#f0fdf4'};border-radius:var(--radius-sm);border:2px solid ${blocked>0?'var(--error)':'var(--success)'};">
+        <div style="font-size:1.8rem;font-weight:800;color:${blocked>0?'var(--error)':'var(--success)'};">${blocked>0?'🚫 '+blocked:'✅ 0'}</div>
+        <div style="font-size:.72rem;color:var(--muted);">Threats Blocked</div>
       </div>
-    </div>
-    <div style="display:flex;gap:1rem;margin-top:0.8rem;">
-      <div style="text-align:center;padding:0.6rem 1rem;background:${blocked > 0 ? '#fef2f2' : '#f0fdf4'};border-radius:var(--radius-sm);border:2px solid ${blocked > 0 ? '#ef4444' : '#22c55e'};">
-        <div style="font-size:1.5rem;font-weight:800;color:${blocked > 0 ? '#ef4444' : '#22c55e'};">${blocked > 0 ? '🚫 ' + blocked : '✅ 0'}</div>
-        <div style="font-size:0.75rem;color:var(--muted);">Threats blocked</div>
-      </div>
-      <div style="flex:1;display:flex;align-items:center;font-size:0.85rem;">
-        <span>${s.total} transactions scanned. <strong>${blocked} malicious input(s) blocked</strong> before reaching AI.</span>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;font-size:.82rem;">
+        <div><strong>${s.total}</strong> transactions scanned</div>
+        <div style="color:var(--muted);margin-top:.2rem;">${blocked} malicious input(s) blocked before reaching AI.</div>
       </div>
     </div>
     ${items.length ? `
-      <div style="margin-top:0.8rem;">
-        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;">Blocked transactions:</div>
-        <table style="font-size:0.8rem;">
-          <thead><tr><th>Date</th><th>Description</th><th>Status</th></tr></thead>
-          <tbody>
-            ${items.map(t => `
-              <tr style="background:#fef2f2;">
-                <td>${t.date}</td>
-                <td><code>${(t.description || '').slice(0, 50)}</code></td>
-                <td><span style="color:#ef4444;font-weight:700;">🚫 BLOCKED</span></td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    ` : ''}
-  `;
+    <div style="font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:.4rem;">BLOCKED TRANSACTIONS</div>
+    <table style="font-size:.82rem;">
+      <thead><tr><th>Date</th><th>Description</th><th>Status</th></tr></thead>
+      <tbody>${items.map(t=>`
+        <tr style="background:#fef2f2;">
+          <td>${t.date}</td>
+          <td><code>${(t.description||'').slice(0,50)}</code></td>
+          <td><span class="tag tag-red">🚫 BLOCKED</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>` : '<div style="color:var(--success);font-size:.82rem;">✅ No blocked transactions recorded yet.</div>'}`;
 }
 
-async function testSafety() {
-  $('safety-test-out').innerHTML = '<div class="empty"><span class="spinner"></span> Uploading safety test CSV...</div>';
-
-  const csvText = SAFETY_TEST_CSV;
-  const blob = new Blob([csvText], {type: 'text/csv'});
-  const formData = new FormData();
-  formData.append('file', blob, 'safety_test.csv');
-
-  const res = await call('/upload', {method: 'POST', body: formData, rawBody: true});
-  if (!res.ok) {
-    $('safety-test-out').innerHTML = '<div class="empty" style="color:var(--error);">Safety test failed.</div>';
-    return;
-  }
-
-  const d = res.body;
-  const blocked = d.safety_blocked || 0;
-  const total = d.rows_parsed || 0;
-  const safe = total - blocked;
-
-  const txnRes = await call('/transactions');
-  const txns = txnRes.ok ? txnRes.body.transactions || [] : [];
-  const recent = txns.filter(t => t.confidence === 'blocked' || t.date === '2026-05-28').slice(0, 10);
-
-  $('safety-test-out').innerHTML = `
-    <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;">
-      <div style="display:flex;gap:1rem;margin-bottom:1rem;">
-        <div style="text-align:center;padding:0.6rem 1rem;background:#fef2f2;border-radius:var(--radius-sm);border:2px solid #ef4444;">
-          <div style="font-size:1.5rem;font-weight:800;color:#ef4444;">🚫 ${blocked}</div>
-          <div style="font-size:0.75rem;color:var(--muted);">Blocked</div>
-        </div>
-        <div style="text-align:center;padding:0.6rem 1rem;background:#f0fdf4;border-radius:var(--radius-sm);border:2px solid #22c55e;">
-          <div style="font-size:1.5rem;font-weight:800;color:#22c55e;">✅ ${safe}</div>
-          <div style="font-size:0.75rem;color:var(--muted);">Safe</div>
-        </div>
-        <div style="flex:1;display:flex;align-items:center;font-size:0.85rem;">
-          <span>Test result: ${total} inputs scanned, <strong>${blocked} blocked</strong>.</span>
-        </div>
-      </div>
-      <table style="font-size:0.8rem;">
-        <thead><tr><th>Description</th><th>Status</th><th>Confidence</th></tr></thead>
-        <tbody>
-          ${recent.map(t => `
-            <tr style="background:${t.confidence === 'blocked' ? '#fef2f2' : ''};">
-              <td><code>${(t.description || '').slice(0, 50)}</code></td>
-              <td>${t.confidence === 'blocked'
-                ? '<span style="color:#ef4444;font-weight:700;">🚫 BLOCKED</span>'
-                : '<span style="color:#22c55e;font-weight:700;">✅ SAFE</span>'}</td>
-              <td>${t.confidence}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-  `;
-  toast('Safety test: ' + blocked + ' threats blocked', blocked > 0 ? 'success' : 'info');
-  // Refresh safety stats
-  loadStats();
-}
-
-const SAFETY_TEST_CSV = `date,description,amount
+const SAFETY_CSV = `date,description,amount
 2026-05-28,VINMART HCM 04,-186000
 2026-05-28,'; DROP TABLE transactions; --,-100000
 2026-05-28,UNION SELECT * FROM users,-200000
@@ -891,76 +819,166 @@ const SAFETY_TEST_CSV = `date,description,amount
 2026-05-28,\${process.env.SECRET},-99000
 2026-05-28,{{constructor.constructor('return this')()}},-77000`;
 
-loadStatus();
-loadReviewQueue();
-loadStats();
+async function testSafety() {
+  $('safety-test-out').innerHTML = '<div class="empty"><span class="spinner"></span> Uploading safety test CSV…</div>';
+  const blob = new Blob([SAFETY_CSV], {type:'text/csv'});
+  const fd = new FormData(); fd.append('file', blob, 'safety_test.csv');
+  const res = await call('/upload', {method:'POST', body:fd});
+  if (!res.ok) { $('safety-test-out').innerHTML = '<div class="empty" style="color:var(--error);">Test failed.</div>'; return; }
+  const d = res.body;
+  const blocked = d.safety_blocked || 0;
+  const total = d.rows_parsed || 0;
+  const safe = total - blocked;
+  $('safety-test-out').innerHTML = `
+    <div style="margin-top:.5rem;padding:.75rem;background:#f9fafb;border-radius:var(--radius-sm);border:1px solid var(--border);">
+      <div style="font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:.5rem;">🧪 TEST RESULT: ${total} inputs scanned</div>
+      <div style="display:flex;gap:.75rem;margin-bottom:.75rem;">
+        <div style="padding:.5rem .9rem;background:#fef2f2;border-radius:var(--radius-sm);border:2px solid var(--error);text-align:center;">
+          <div style="font-size:1.2rem;font-weight:800;color:var(--error);">🚫 ${blocked}</div>
+          <div style="font-size:.68rem;color:var(--muted);">Blocked</div>
+        </div>
+        <div style="padding:.5rem .9rem;background:#f0fdf4;border-radius:var(--radius-sm);border:2px solid var(--success);text-align:center;">
+          <div style="font-size:1.2rem;font-weight:800;color:var(--success);">✅ ${safe}</div>
+          <div style="font-size:.68rem;color:var(--muted);">Safe</div>
+        </div>
+      </div>
+    </div>`;
+  toast(`Safety test: ${blocked}/${total} threats blocked`, blocked > 0 ? 'success' : '');
+  loadSafetyStats();
+}
 
+// ══════════════════════════════════════════════
+// AI PERFORMANCE
+// ══════════════════════════════════════════════
+async function loadStats() {
+  const res = await call('/stats');
+  if (!res.ok || !res.body.total) {
+    $('stats-out').innerHTML = '<div class="empty">Upload transactions to see live stats.</div>';
+    return;
+  }
+  const s = res.body;
+  const conf = s.confidence || {};
+  const pct = s.confidence_pct || {};
+  const confColors = {high:'var(--success)',medium:'var(--warn)',low:'var(--error)',human:'var(--info)',blocked:'#6b7280'};
+
+  $('stats-out').innerHTML = `
+    <div class="grid-4 mb-4" style="gap:.6rem;">
+      ${['high','medium','low','human'].map(k => `
+        <div style="text-align:center;padding:.6rem;background:var(--bg-alt);border-radius:var(--radius-sm);">
+          <div style="font-size:1.3rem;font-weight:700;color:${confColors[k]};">${conf[k]||0}</div>
+          <div style="font-size:.68rem;color:var(--muted);text-transform:capitalize;">${k}</div>
+        </div>`).join('')}
+    </div>
+    <div style="margin-bottom:.4rem;font-size:.75rem;color:var(--muted);">Confidence distribution (${s.total} transactions)</div>
+    <div style="display:flex;height:18px;border-radius:4px;overflow:hidden;gap:1px;">
+      ${Object.entries(conf).filter(([,v])=>v>0).map(([k,v])=>
+        `<div style="width:${(v/s.total*100).toFixed(1)}%;background:${confColors[k]};display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff;font-weight:600;" title="${k}: ${pct[k]}%">${pct[k]||''}%</div>`
+      ).join('')}
+    </div>`;
+}
+
+async function runAccuracy() {
+  const btn = $('acc-btn');
+  btn.disabled = true; btn.textContent = '⏳ Testing…';
+  $('accuracy-out').innerHTML = '<div class="empty"><span class="spinner"></span> Running 40-transaction accuracy test…</div>';
+  const res = await call('/accuracy');
+  btn.disabled = false; btn.textContent = '▶ Run test (40 txn)';
+  if (!res.ok || !res.body.total) { $('accuracy-out').innerHTML = '<div class="empty" style="color:var(--error);">Test failed.</div>'; return; }
+  const d = res.body;
+  const col = d.accuracy >= 90 ? 'var(--success)' : d.accuracy >= 70 ? 'var(--warn)' : 'var(--error)';
+  const cats = Object.entries(d.per_category).sort((a,b)=>b[1].f1-a[1].f1);
+  $('accuracy-out').innerHTML = `
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;padding:.75rem;background:var(--bg-alt);border-radius:var(--radius-sm);">
+      <div style="text-align:center;padding:.6rem 1rem;background:white;border-radius:var(--radius-sm);border:2px solid ${col};">
+        <div style="font-size:1.8rem;font-weight:800;color:${col};">${d.accuracy}%</div>
+        <div style="font-size:.7rem;color:var(--muted);">Accuracy</div>
+      </div>
+      <div style="font-size:.82rem;">
+        <div><strong>${d.correct}</strong>/${d.total} correct</div>
+        <div style="color:var(--muted);">Backend: <strong>${d.backend}</strong></div>
+        <div style="color:var(--muted);">${d.errors.length} misclassified</div>
+      </div>
+    </div>
+    <table style="font-size:.78rem;">
+      <thead><tr><th>Category</th><th>TP</th><th>FP</th><th>FN</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead>
+      <tbody>${cats.map(([cat,m])=>`<tr>
+        <td><span class="cat-pill">${cat}</span></td>
+        <td>${m.tp}</td><td>${m.fp}</td><td>${m.fn}</td>
+        <td style="color:${m.precision>=.8?'var(--success)':m.precision>=.5?'var(--warn)':'var(--error)'};font-weight:600;">${m.precision.toFixed(2)}</td>
+        <td style="color:${m.recall>=.8?'var(--success)':m.recall>=.5?'var(--warn)':'var(--error)'};font-weight:600;">${m.recall.toFixed(2)}</td>
+        <td style="font-weight:600;">${m.f1.toFixed(2)}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+
+  if (d.errors.length) {
+    $('failures-out').innerHTML = `
+      <div style="margin-bottom:.75rem;font-size:.8rem;padding:.5rem .75rem;background:#fef2f2;border-radius:var(--radius-sm);">
+        <strong>${d.errors.length} failure case(s)</strong> from ${d.total} tests · Accuracy: <strong>${d.accuracy}%</strong>
+      </div>
+      ${d.errors.map((e,i)=>`
+        <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:.6rem;border-left:3px solid var(--error);">
+          <div style="font-size:.83rem;font-weight:600;margin-bottom:.4rem;">Case ${i+1}: ${e.description}</div>
+          <div style="font-size:.78rem;display:flex;gap:1rem;flex-wrap:wrap;">
+            <span>AI: <span class="tag tag-red">${e.predicted}</span></span>
+            <span>→ Human: <span class="tag tag-green">${e.human}</span></span>
+            <span style="color:var(--muted);">Fix: ${e.confidence==='low'?'Low confidence → Review Queue → user corrects':'Improve AI prompt or add keyword'}</span>
+          </div>
+        </div>`).join('')}`;
+  } else {
+    $('failures-out').innerHTML = '<div style="padding:1rem;background:#f0fdf4;border-radius:var(--radius-sm);color:#065f46;font-weight:600;">✅ Perfect accuracy — no failures!</div>';
+  }
+}
+
+// ══════════════════════════════════════════════
+// NAV BADGES
+// ══════════════════════════════════════════════
+function updateNavBadge(id, count) {
+  const el = $(id);
+  if (count > 0) { el.style.display = 'inline'; el.textContent = count; }
+  else { el.style.display = 'none'; }
+}
+
+async function updateNavBadges() {
+  const res = await call('/stats');
+  if (res.ok && res.body.total) {
+    updateNavBadge('safety-badge', res.body.blocked_count || 0);
+  }
+  const res2 = await call('/review-queue');
+  if (res2.ok && res2.body.items) {
+    updateNavBadge('review-badge', res2.body.items.length);
+  }
+}
+
+// ══════════════════════════════════════════════
+// PDF EXPORT
+// ══════════════════════════════════════════════
+function exportPDF() {
+  const el = document.getElementById('report-content');
+  html2pdf().set({
+    margin: 0.3, filename: 'budgetbot-report.pdf',
+    image: {type:'jpeg', quality:.98},
+    html2canvas: {scale:2, useCORS:true},
+    jsPDF: {unit:'in', format:'a4', orientation:'landscape'}
+  }).from(el).save();
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+async function init() {
+  const res = await call('/health');
+  if (res.ok) {
+    const b = res.body.backends || {};
+    $('backend-info').textContent = `ai:${b.ai} · db:${b.userstore}`;
+  } else {
+    $('backend-info').textContent = '⚠ Backend offline';
+    $('backend-info').style.color = 'var(--error)';
+  }
+  loadDashboard();
+  updateNavBadges();
+}
+
+init();
 </script>
-  <script>
-    // UI Logic
-    function switchTab(tabId) {
-      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-      
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      
-      const titles = {
-        'dashboard': 'Dashboard Overview',
-        'transactions': 'All Transactions',
-        'review': 'Review Queue',
-        'safety': 'AI Safety Guard',
-        'performance': 'AI Performance'
-      };
-      document.getElementById('page-title').innerText = titles[tabId];
-
-      if (tabId === 'dashboard') {
-        document.getElementById('sec-dashboard-upload').classList.add('active');
-        document.getElementById('sec-dashboard').classList.add('active');
-      } else {
-        document.getElementById('sec-' + tabId).classList.add('active');
-      }
-    }
-
-    function exportPDF() {
-      // Export only the main wrapper, but ensure we show the active section properly
-      const element = document.getElementById('report-content');
-      
-      // Temporary tweak for PDF: make sure background is white, hide scrollbars
-      const origOverflow = element.style.overflow;
-      element.style.overflow = 'visible';
-      element.style.background = 'white';
-
-      const opt = {
-        margin:       0.3,
-        filename:     'budgetbot-report.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
-      };
-      
-      html2pdf().set(opt).from(element).save().then(() => {
-        element.style.overflow = origOverflow;
-        element.style.background = 'transparent';
-      });
-    }
-    
-    // Drag and drop logic
-    const dropZone = document.getElementById('drop-zone');
-    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--accent)'; });
-    dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = '#cbd5e1'; });
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.style.borderColor = '#cbd5e1';
-      if (e.dataTransfer.files.length) {
-        document.getElementById('file-upload').files = e.dataTransfer.files;
-        handleFileSelect({target: {files: e.dataTransfer.files}});
-      }
-    });
-
-    function handleFileSelect(e) {
-      const file = e.target.files[0];
-      if (file) doUpload(file);
-    }
-  </script>
 </body>
 </html>
