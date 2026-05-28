@@ -49,6 +49,19 @@ def check_safety(text: str) -> dict:
         return {"safe": True, "threat_type": None, "pattern": None}
 
     text_lower = text.lower().strip()
+    
+    # 1. Layer 1: Input Validation (Length & Allowed Characters)
+    if len(text_lower) > 255:
+        logger.warning("safety_block threat_type=input_validation pattern=max_length input_len=%d", len(text_lower))
+        return {"safe": False, "threat_type": "input_validation", "pattern": "max_length_exceeded"}
+        
+    # Regex allowlist: alphanumeric, space, vietnamese chars, basic safe punctuation
+    # Block explicitly dangerous characters: < > { } $ % ^ | ` ~
+    if re.search(r'[<>{}\$\%\^\|`~]', text):
+        logger.warning("safety_block threat_type=input_validation pattern=invalid_chars input=%s", text[:80])
+        return {"safe": False, "threat_type": "input_validation", "pattern": "invalid_characters"}
+
+    # 2. Layer 2: Threat Patterns
 
     for threat_type, patterns in THREAT_PATTERNS.items():
         for pattern in patterns:
