@@ -1,29 +1,29 @@
-# W7 Evidence Pack — Team 14 BudgetBot
+﻿# W7 Evidence Pack â€” Team 14 BudgetBot
 
 ## 1. Cover
 
 | Item | Value |
 |---|---|
 | Team | Team 14 / G14 |
-| Domain | FinTech — AI Money Coach / BudgetBot |
-| Live public URL | https://budgetbot.topjob.id.vn |
-| CloudFront URL | https://d104yk0i41rvg5.cloudfront.net |
-| API endpoint | https://mlhwir8gc5.execute-api.ap-southeast-1.amazonaws.com |
-| GitHub repo | https://github.com/anons2003/team14-repo |
-| AWS account | 325137989598 |
+| Domain | FinTech â€” AI Money Coach / BudgetBot |
+| Live public URL | https://your-domain.example.com |
+| CloudFront URL | https://xxxxxxxxxxxx.cloudfront.net |
+| API endpoint | https://xxxxxxxxxx.execute-api.ap-southeast-1.amazonaws.com |
+| GitHub repo | https://github.com/your-github-username/team14-repo |
+| AWS account | 123456789012 |
 | AWS region | ap-southeast-1 |
 | CloudFormation stack | team14-budgetbot-iac |
 | Total spend | TODO: fill from Friday pre-demo Cost Explorer screenshot |
 | Hard cap | $100/group |
 | Budget alert | W7-Team14-HardCap-100USD, $100 monthly cost budget |
-| Confirmed SNS email | truclt0311@gmail.com |
+| Confirmed SNS email | your-email@example.com |
 
 ### Required Submission Artifacts
 
 | Artifact | Status | Evidence |
 |---|---:|---|
-| Live HTTPS URL | Done | `https://budgetbot.topjob.id.vn` returns HTTP 200 through CloudFront |
-| GitHub repo | Done | `https://github.com/anons2003/team14-repo` |
+| Live HTTPS URL | Done | `https://your-domain.example.com` returns HTTP 200 through CloudFront |
+| GitHub repo | Done | `https://github.com/your-github-username/team14-repo` |
 | Final architecture diagram | Done | `docs/architecture.png` |
 | Evidence Pack | Done | `docs/W7_evidence.md` |
 | Demo video | TODO | Add `docs/demo.mp4` or unlisted YouTube link |
@@ -38,7 +38,7 @@ Target users are students, young professionals, and small business owners who do
 
 ### Demo Story
 
-1. Trainer opens `https://budgetbot.topjob.id.vn`.
+1. Trainer opens `https://your-domain.example.com`.
 2. Upload `sample_data/bank_statement_q2_2026.csv`.
 3. Lambda stores the raw CSV in S3.
 4. Lambda sends transaction descriptions to Amazon Bedrock InvokeModel.
@@ -65,17 +65,17 @@ Deployment path:
 
 | # | Capability | Implemented Service | Evidence / Resource | Why This Choice |
 |---:|---|---|---|---|
-| 1 | User-Facing Entry | Route 53 + CloudFront + S3 static frontend + API Gateway HTTP API | `budgetbot.topjob.id.vn`, CloudFront `E349TWP6TRPSOC`, API `mlhwir8gc5` | CloudFront gives public HTTPS and private S3 origin access. API Gateway HTTP API is cheaper and simpler than REST API for Lambda proxy routes. |
+| 1 | User-Facing Entry | Route 53 + CloudFront + S3 static frontend + API Gateway HTTP API | `your-domain.example.com`, CloudFront `XXXXXXXXXXXX`, API `xxxxxxxxxx` | CloudFront gives public HTTPS and private S3 origin access. API Gateway HTTP API is cheaper and simpler than REST API for Lambda proxy routes. |
 | 2 | Application Compute | AWS Lambda running FastAPI through Mangum | `team14-budgetbot-cfn-backend`, Python 3.12, 512 MB, 30s timeout | CSV parsing and classification are request-driven. Lambda avoids idle server cost and deploys quickly for a 48-hour hackathon. |
 | 3 | AI / ML Feature | Amazon Bedrock Runtime InvokeModel | `AI_MODEL_ID=apac.amazon.nova-micro-v1:0` | BudgetBot classification is a direct per-transaction reasoning task, not RAG. InvokeModel is simpler and cheaper than building a Knowledge Base. |
 | 4 | Data Persistence | DynamoDB | `team14-budgetbot-cfn-transactions`, PK `user_id`, SK `sk`, PAY_PER_REQUEST, PITR enabled | Access pattern is user/month transaction lookup and category summary. DynamoDB keeps ops low and avoids RDS instance/proxy cost. |
-| 5 | Object Storage | Amazon S3 | raw bucket `team14-budgetbot-cfn-raw-325137989598-ap-southeast-1`, frontend bucket `team14-budgetbot-cfn-frontend-325137989598-ap-southeast-1`, artifact bucket `team14-budgetbot-artifacts-325137989598-ap-southeast-1` | S3 is the correct primitive for raw CSV upload, static frontend, and Lambda artifacts. |
+| 5 | Object Storage | Amazon S3 | raw bucket `team14-budgetbot-cfn-raw-123456789012-ap-southeast-1`, frontend bucket `team14-budgetbot-cfn-frontend-123456789012-ap-southeast-1`, artifact bucket `team14-budgetbot-artifacts-123456789012-ap-southeast-1` | S3 is the correct primitive for raw CSV upload, static frontend, and Lambda artifacts. |
 | 6 | Network Foundation | VPC, private subnets across 2 AZs, security groups, VPC endpoints, no NAT Gateway | VPC `vpc-044f26a2a760491ba`; private subnets `subnet-0acedaa53e5480c96`, `subnet-0f404f193e6534efd`; endpoints for S3, DynamoDB, Bedrock Runtime, CloudWatch Monitoring | Lambda has no public IP. Private subnets use AWS service endpoints instead of NAT to reduce cost and keep AWS traffic private. |
-| 7 | Identity & Access | IAM least-privilege Lambda execution role | `arn:aws:iam::325137989598:role/team14-budgetbot-cfn-lambda-role` | Capability #7 requires least-privilege service roles. User login is optional for this hackathon, so the app uses a demo `X-User-Id` pattern instead of spending time on Cognito. |
+| 7 | Identity & Access | IAM least-privilege Lambda execution role | `arn:aws:iam::<YOUR_ACCOUNT_ID>:role/team14-budgetbot-cfn-lambda-role` | Capability #7 requires least-privilege service roles. User login is optional for this hackathon, so the app uses a demo `X-User-Id` pattern instead of spending time on Cognito. |
 
 ### Optional Capability Selected
 
-Team 14 selected **Optional #8 — Full Observability**.
+Team 14 selected **Optional #8 â€” Full Observability**.
 
 | Requirement | Implementation | Status |
 |---|---|---:|
@@ -89,7 +89,7 @@ Team 14 selected **Optional #8 — Full Observability**.
 | Bonus Path | Evidence |
 |---|---|
 | B. CI/CD pipeline | `.github/workflows/build-and-deploy.yml`; latest runs succeeded on `main` |
-| C. Custom domain + HTTPS | Route 53 `budgetbot.topjob.id.vn`, ACM certificate in `us-east-1`, CloudFront alias |
+| C. Custom domain + HTTPS | Route 53 `your-domain.example.com`, ACM certificate in `us-east-1`, CloudFront alias |
 | E. IaC full coverage | `infrastructure/cloudformation.yaml` creates VPC, endpoints, S3, CloudFront, DynamoDB, IAM, Lambda, API Gateway, CloudWatch dashboard/alarm/query |
 | F. AI Safety Mechanism | `src/adapters/safety.py` implements prompt injection, SQL injection, and template injection guards. UI Section 7 provides a live testing endpoint. Blocked inputs are persisted and tracked in `GET /stats`. |
 | H. Cost under $30 | Pending final Cost Explorer screenshot and clean teardown confirmation |
@@ -115,7 +115,7 @@ Team 14 selected **Optional #8 — Full Observability**.
 | Requirement | Status | Evidence |
 |---|---:|---|
 | AWS Budget alert | Done | `W7-Team14-HardCap-100USD`, $100 monthly COST budget |
-| SNS email confirmed | Done | `truclt0311@gmail.com`, subscription ARN confirmed |
+| SNS email confirmed | Done | `your-email@example.com`, subscription ARN confirmed |
 | Cost Anomaly Detection | Done | Monitor `Default-Services-Monitor`; attach `docs/evidence_screenshots/cost/03_cost_anomaly_detection.png` |
 | Tagging convention | Done | `Project=W7Capstone`, `Team=G14`, `Owner=Team14`, `Environment=hackathon` in CloudFormation resources |
 | Bedrock access | Done | Lambda health shows `ai=bedrock`; InvokeModel path works through deployed app |
@@ -153,9 +153,9 @@ AWS Cost Explorer returned `DataUnavailableException` during evidence drafting, 
 | Area | Implementation | Evidence |
 |---|---|---|
 | Root account safety | Root MFA required by W7 pre-flight | Attach `docs/evidence_screenshots/security/01_root_mfa_enabled.png` from AWS account owner |
-| HTTPS public entry | Route 53 + CloudFront + ACM certificate | `budgetbot.topjob.id.vn`; ACM cert `arn:aws:acm:us-east-1:325137989598:certificate/5aece9cc-fd4b-4ebc-a6a5-24ab429455de`; CloudFront TLS minimum `TLSv1.2_2021` |
-| Private frontend bucket | S3 Block Public Access + CloudFront OAC | `team14-budgetbot-cfn-frontend-325137989598-ap-southeast-1`, OAC `E3U013UCJVZJJW` |
-| Raw statement storage | S3 Block Public Access + SSE-S3 | `team14-budgetbot-cfn-raw-325137989598-ap-southeast-1`, AES256 encryption |
+| HTTPS public entry | Route 53 + CloudFront + ACM certificate | `your-domain.example.com`; ACM cert `arn:aws:acm:us-east-1:123456789012:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`; CloudFront TLS minimum `TLSv1.2_2021` |
+| Private frontend bucket | S3 Block Public Access + CloudFront OAC | `team14-budgetbot-cfn-frontend-123456789012-ap-southeast-1`, OAC `XXXXXXXXXXXXX` |
+| Raw statement storage | S3 Block Public Access + SSE-S3 | `team14-budgetbot-cfn-raw-123456789012-ap-southeast-1`, AES256 encryption |
 | Data encryption | DynamoDB SSE enabled + PITR enabled | `team14-budgetbot-cfn-transactions`, `SSE=ENABLED`, continuous backups `ENABLED` |
 | Network isolation | Lambda in private subnets, no public IP, private route table has no internet default route | private subnets `subnet-0acedaa53e5480c96`, `subnet-0f404f193e6534efd`; no NAT Gateway |
 | Least privilege | Lambda role grants only required service actions | `BudgetBotLambdaLeastPrivilegePolicy` |
@@ -183,7 +183,7 @@ Team 14 implemented **Full Observability** as the selected optional capability.
 | Item | Value |
 |---|---|
 | Dashboard name | `team14-budgetbot-cfn-observability` |
-| Dashboard ARN | `arn:aws:cloudwatch::325137989598:dashboard/team14-budgetbot-cfn-observability` |
+| Dashboard ARN | `arn:aws:cloudwatch::123456789012:dashboard/team14-budgetbot-cfn-observability` |
 | Region | ap-southeast-1 |
 | Widgets | BudgetBot demo path metrics |
 
@@ -226,7 +226,7 @@ Evidence:
 
 ## 6.5 Measurement & Decisions
 
-### DECISION 1 — DynamoDB Over RDS PostgreSQL
+### DECISION 1 â€” DynamoDB Over RDS PostgreSQL
 
 **DECISION:** Use DynamoDB PAY_PER_REQUEST table `team14-budgetbot-cfn-transactions` for categorized transactions.
 
@@ -253,7 +253,7 @@ Evidence:
 
 DynamoDB does not provide SQL-style `GROUP BY` queries, so the app aggregates category summary in application code after querying the user's transactions. This is acceptable for a hackathon sample and avoids RDS idle cost. At larger scale, we would add GSIs or precomputed monthly summary items.
 
-### DECISION 2 — Amazon Bedrock InvokeModel With Nova Micro Batch Classification
+### DECISION 2 â€” Amazon Bedrock InvokeModel With Nova Micro Batch Classification
 
 **DECISION:** Use Amazon Bedrock Runtime `InvokeModel` with `apac.amazon.nova-micro-v1:0` for transaction categorization. The prompt requires JSON-only output with `category` and `confidence`.
 
@@ -283,7 +283,7 @@ DynamoDB does not provide SQL-style `GROUP BY` queries, so the app aggregates ca
 
 The system does not claim perfect automatic classification. Instead, it exposes confidence and makes low-confidence cases reviewable. This is safer for financial data than hiding uncertainty.
 
-### DECISION 3 — No NAT Gateway; Use VPC Endpoints
+### DECISION 3 â€” No NAT Gateway; Use VPC Endpoints
 
 **DECISION:** Run Lambda in private subnets across two AZs and access AWS services using VPC endpoints instead of a NAT Gateway.
 
@@ -327,16 +327,16 @@ Teardown deadline: **Sunday 1/6 EOD**. Commit confirmation to `docs/teardown_con
 1. Disable or remove custom DNS aliases if deleting CloudFront.
 2. Delete CloudFormation stack `team14-budgetbot-iac`.
 3. If stack deletion fails on S3, empty these buckets first:
-   - `team14-budgetbot-cfn-frontend-325137989598-ap-southeast-1`
-   - `team14-budgetbot-cfn-raw-325137989598-ap-southeast-1`
-   - `team14-budgetbot-artifacts-325137989598-ap-southeast-1`
-4. Delete CloudFront distribution `E349TWP6TRPSOC` after disabling it if needed.
-5. Delete API Gateway `mlhwir8gc5`.
+   - `team14-budgetbot-cfn-frontend-123456789012-ap-southeast-1`
+   - `team14-budgetbot-cfn-raw-123456789012-ap-southeast-1`
+   - `team14-budgetbot-artifacts-123456789012-ap-southeast-1`
+4. Delete CloudFront distribution `XXXXXXXXXXXX` after disabling it if needed.
+5. Delete API Gateway `xxxxxxxxxx`.
 6. Delete Lambda function `team14-budgetbot-cfn-backend`.
 7. Delete DynamoDB table `team14-budgetbot-cfn-transactions` if still present.
 8. Delete CloudWatch dashboard, alarm, saved query, and Lambda log group.
 9. Delete VPC endpoints, subnets, route tables, security groups, internet gateway, and VPC last.
-10. Review Route 53 hosted zones and remove the redundant `budgetbot.topjob.id.vn` hosted zone if it is not needed.
+10. Review Route 53 hosted zones and remove the redundant `your-domain.example.com` hosted zone if it is not needed.
 11. Verify Cost Explorer on Monday 2/6 and commit the screenshot.
 
 ### Teardown Command Starting Point
@@ -353,11 +353,11 @@ aws cloudformation wait stack-delete-complete \
   --stack-name team14-budgetbot-iac
 ```
 
-## Appendix A — Live Validation Commands
+## Appendix A â€” Live Validation Commands
 
 ```bash
-curl -I https://budgetbot.topjob.id.vn
-curl https://mlhwir8gc5.execute-api.ap-southeast-1.amazonaws.com/health
+curl -I https://your-domain.example.com
+curl https://xxxxxxxxxx.execute-api.ap-southeast-1.amazonaws.com/health
 
 aws cloudformation describe-stacks \
   --profile hackathon \
@@ -375,7 +375,7 @@ aws dynamodb describe-continuous-backups \
   --table-name team14-budgetbot-cfn-transactions
 ```
 
-## Appendix B — Source Requirements Used
+## Appendix B â€” Source Requirements Used
 
 This Evidence Pack was prepared against:
 
@@ -384,3 +384,4 @@ This Evidence Pack was prepared against:
 - `W7/W7_hackathon_rules.txt`
 - `W7/W7_cost_estimates.md`
 - `W7/starter_apps/README.md`
+

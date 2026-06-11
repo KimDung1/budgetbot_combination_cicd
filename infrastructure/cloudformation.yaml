@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: "2010-09-09"
+﻿AWSTemplateFormatVersion: "2010-09-09"
 Description: Team 14 BudgetBot serverless infrastructure for W7 Capstone.
 
 Parameters:
@@ -36,12 +36,12 @@ Parameters:
     Description: S3 key for Lambda zip artifact. Required when DeployApplication=true.
   BedrockModelArn:
     Type: String
-    Default: arn:aws:bedrock:ap-southeast-1:325137989598:inference-profile/apac.amazon.nova-micro-v1:0
+    Default: arn:aws:bedrock:ap-southeast-1:123456789012:inference-profile/apac.amazon.nova-micro-v1:0
     Description: Foundation model or inference profile ARN allowed for BudgetBot Lambda.
   CustomDomainName:
     Type: String
     Default: ""
-    Description: Optional CloudFront alternate domain name, for example budgetbot.topjob.id.vn.
+    Description: Optional CloudFront alternate domain name, for example your-domain.example.com.
   CustomCertificateArn:
     Type: String
     Default: ""
@@ -870,3 +870,4 @@ Outputs:
     Condition: ShouldDeployApplication
     Description: API Gateway HTTP API endpoint.
     Value: !GetAtt BudgetBotApi.ApiEndpoint
+

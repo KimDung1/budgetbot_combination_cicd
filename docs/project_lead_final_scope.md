@@ -1,19 +1,19 @@
-# Project Lead Final Scope
+﻿# Project Lead Final Scope
 
 Owner: Project Lead
 
-Mục tiêu phần này là chốt lại câu chuyện demo cuối cùng: cái gì đã chạy thật, cái gì không cần đưa vào demo, và trainer sẽ đi qua luồng nào để thấy BudgetBot hoạt động end-to-end.
+Má»¥c tiĂªu pháº§n nĂ y lĂ  chá»‘t láº¡i cĂ¢u chuyá»‡n demo cuá»‘i cĂ¹ng: cĂ¡i gĂ¬ Ä‘Ă£ cháº¡y tháº­t, cĂ¡i gĂ¬ khĂ´ng cáº§n Ä‘Æ°a vĂ o demo, vĂ  trainer sáº½ Ä‘i qua luá»“ng nĂ o Ä‘á»ƒ tháº¥y BudgetBot hoáº¡t Ä‘á»™ng end-to-end.
 
-## 1. Những Gì Đã Chạy
+## 1. Nhá»¯ng GĂ¬ ÄĂ£ Cháº¡y
 
-### Hạ tầng và safety
+### Háº¡ táº§ng vĂ  safety
 
-- AWS region đã dùng: `ap-southeast-1`.
-- CloudFormation stack đã deploy: `team14-budgetbot-iac`.
-- Budget alert đã tạo: `W7-Team14-HardCap-100USD`, cảnh báo khi actual cost vượt `$80`.
-- SNS email alert đã confirm: `truclt0311@gmail.com`.
-- Cost Anomaly Detection đã bật và đã thêm subscriber.
-- Tagging convention đã thống nhất:
+- AWS region Ä‘Ă£ dĂ¹ng: `ap-southeast-1`.
+- CloudFormation stack Ä‘Ă£ deploy: `team14-budgetbot-iac`.
+- Budget alert Ä‘Ă£ táº¡o: `W7-Team14-HardCap-100USD`, cáº£nh bĂ¡o khi actual cost vÆ°á»£t `$80`.
+- SNS email alert Ä‘Ă£ confirm: `your-email@example.com`.
+- Cost Anomaly Detection Ä‘Ă£ báº­t vĂ  Ä‘Ă£ thĂªm subscriber.
+- Tagging convention Ä‘Ă£ thá»‘ng nháº¥t:
   - `Project=W7Capstone`
   - `Team=G14`
   - `Owner=<member-name>`
@@ -21,113 +21,113 @@ Mục tiêu phần này là chốt lại câu chuyện demo cuối cùng: cái g
 
 ### Foundation resources
 
-- S3 frontend bucket đã tạo, bật Block Public Access và encryption.
-- S3 raw statements bucket đã tạo, bật Block Public Access và encryption.
-- Đã xóa 2 bucket S3 cũ bị trùng chức năng:
-  - `team14-budgetbot-frontend-325137989598`
-  - `team14-budgetbot-raw-325137989598`
-- S3 buckets còn dùng cho demo:
-  - `team14-budgetbot-cfn-frontend-325137989598-ap-southeast-1` cho static frontend.
-  - `team14-budgetbot-cfn-raw-325137989598-ap-southeast-1` cho raw statement uploads và Lambda artifacts đã deploy thủ công.
-  - `team14-budgetbot-artifacts-325137989598-ap-southeast-1` cho GitHub Actions Lambda artifacts nếu dùng CI/CD.
-- DynamoDB table đã tạo: `team14-budgetbot-cfn-transactions`.
-- Lambda execution role đã tạo theo hướng least privilege.
-- VPC đã tạo với private Lambda subnets across two AZs.
-- VPC endpoints đã tạo cho S3, DynamoDB, Bedrock Runtime, và CloudWatch Monitoring.
-- CloudFront distribution đã tạo để serve frontend bằng HTTPS.
-- API Gateway HTTP API đã tạo để expose backend endpoints.
+- S3 frontend bucket Ä‘Ă£ táº¡o, báº­t Block Public Access vĂ  encryption.
+- S3 raw statements bucket Ä‘Ă£ táº¡o, báº­t Block Public Access vĂ  encryption.
+- ÄĂ£ xĂ³a 2 bucket S3 cÅ© bá»‹ trĂ¹ng chá»©c nÄƒng:
+  - `team14-budgetbot-frontend-123456789012`
+  - `team14-budgetbot-raw-123456789012`
+- S3 buckets cĂ²n dĂ¹ng cho demo:
+  - `team14-budgetbot-cfn-frontend-123456789012-ap-southeast-1` cho static frontend.
+  - `team14-budgetbot-cfn-raw-123456789012-ap-southeast-1` cho raw statement uploads vĂ  Lambda artifacts Ä‘Ă£ deploy thá»§ cĂ´ng.
+  - `team14-budgetbot-artifacts-123456789012-ap-southeast-1` cho GitHub Actions Lambda artifacts náº¿u dĂ¹ng CI/CD.
+- DynamoDB table Ä‘Ă£ táº¡o: `team14-budgetbot-cfn-transactions`.
+- Lambda execution role Ä‘Ă£ táº¡o theo hÆ°á»›ng least privilege.
+- VPC Ä‘Ă£ táº¡o vá»›i private Lambda subnets across two AZs.
+- VPC endpoints Ä‘Ă£ táº¡o cho S3, DynamoDB, Bedrock Runtime, vĂ  CloudWatch Monitoring.
+- CloudFront distribution Ä‘Ă£ táº¡o Ä‘á»ƒ serve frontend báº±ng HTTPS.
+- API Gateway HTTP API Ä‘Ă£ táº¡o Ä‘á»ƒ expose backend endpoints.
 
 ### Core application
 
-- Lambda backend đã deploy: `team14-budgetbot-cfn-backend`.
-- API routes đã chạy:
+- Lambda backend Ä‘Ă£ deploy: `team14-budgetbot-cfn-backend`.
+- API routes Ä‘Ă£ cháº¡y:
   - `GET /health`
   - `POST /upload`
   - `GET /transactions`
   - `GET /summary`
   - `GET /review-queue`
-- Frontend đã cấu hình gọi API thật.
-- Upload CSV thật đã chạy được với S3 raw storage.
-- Bedrock InvokeModel đã chạy thật bằng Amazon Nova Micro.
-- DynamoDB write/read đã chạy thật.
-- Duplicate upload đã xử lý: upload cùng một file không nhân bản transaction.
-- Low-confidence review queue đã chạy qua API Gateway và hiển thị trên frontend.
-- File `bank_statement_q2_2026.csv` đã test thành công với `83` transaction.
-- Data Owner proof đã chạy với `user_id=data-owner-1779934940`: upload lưu 83 categorized transactions, query `month=2026-03` trả 30 transactions, DynamoDB query cùng key condition cũng trả count 30, và summary trả category breakdown.
-- CloudWatch logs đã có evidence từ Lambda và Bedrock classification path.
-- Observability Owner proof đã chạy với `user_id=observability-1779935557`: custom metrics có datapoints `UploadSucceeded=1`, `TransactionsCategorized=83`, `LowConfidenceTransactions=7`, `BedrockLatencyMs≈6102`; dashboard `team14-budgetbot-cfn-observability` tồn tại; alarm `team14-budgetbot-cfn-low-confidence-transactions` ở trạng thái `OK`; saved Logs Insights query `team14-budgetbot-cfn/upload-classification-path` chạy ra 5 rows.
+- Frontend Ä‘Ă£ cáº¥u hĂ¬nh gá»i API tháº­t.
+- Upload CSV tháº­t Ä‘Ă£ cháº¡y Ä‘Æ°á»£c vá»›i S3 raw storage.
+- Bedrock InvokeModel Ä‘Ă£ cháº¡y tháº­t báº±ng Amazon Nova Micro.
+- DynamoDB write/read Ä‘Ă£ cháº¡y tháº­t.
+- Duplicate upload Ä‘Ă£ xá»­ lĂ½: upload cĂ¹ng má»™t file khĂ´ng nhĂ¢n báº£n transaction.
+- Low-confidence review queue Ä‘Ă£ cháº¡y qua API Gateway vĂ  hiá»ƒn thá»‹ trĂªn frontend.
+- File `bank_statement_q2_2026.csv` Ä‘Ă£ test thĂ nh cĂ´ng vá»›i `83` transaction.
+- Data Owner proof Ä‘Ă£ cháº¡y vá»›i `user_id=data-owner-1779934940`: upload lÆ°u 83 categorized transactions, query `month=2026-03` tráº£ 30 transactions, DynamoDB query cĂ¹ng key condition cÅ©ng tráº£ count 30, vĂ  summary tráº£ category breakdown.
+- CloudWatch logs Ä‘Ă£ cĂ³ evidence tá»« Lambda vĂ  Bedrock classification path.
+- Observability Owner proof Ä‘Ă£ cháº¡y vá»›i `user_id=observability-1779935557`: custom metrics cĂ³ datapoints `UploadSucceeded=1`, `TransactionsCategorized=83`, `LowConfidenceTransactions=7`, `BedrockLatencyMsâ‰ˆ6102`; dashboard `team14-budgetbot-cfn-observability` tá»“n táº¡i; alarm `team14-budgetbot-cfn-low-confidence-transactions` á»Ÿ tráº¡ng thĂ¡i `OK`; saved Logs Insights query `team14-budgetbot-cfn/upload-classification-path` cháº¡y ra 5 rows.
 
 ### Public endpoints
 
-- Frontend URL: `https://d104yk0i41rvg5.cloudfront.net`
-- API endpoint: `https://mlhwir8gc5.execute-api.ap-southeast-1.amazonaws.com`
+- Frontend URL: `https://xxxxxxxxxxxx.cloudfront.net`
+- API endpoint: `https://xxxxxxxxxx.execute-api.ap-southeast-1.amazonaws.com`
 
-## 2. Cắt Những Phần Không Cần Thiết
+## 2. Cáº¯t Nhá»¯ng Pháº§n KhĂ´ng Cáº§n Thiáº¿t
 
-Những phần dưới đây không đưa vào demo chính để giữ demo gọn, giảm rủi ro, và tập trung vào 7 mandatory capabilities cộng optional Full Observability.
+Nhá»¯ng pháº§n dÆ°á»›i Ä‘Ă¢y khĂ´ng Ä‘Æ°a vĂ o demo chĂ­nh Ä‘á»ƒ giá»¯ demo gá»n, giáº£m rá»§i ro, vĂ  táº­p trung vĂ o 7 mandatory capabilities cá»™ng optional Full Observability.
 
-### Cắt khỏi scope build/demo
+### Cáº¯t khá»i scope build/demo
 
-- Không làm banking integration thật.
-- Không dùng dữ liệu tài chính thật của người dùng.
-- Không làm Cognito signup/login.
-- Không làm multi-user auth flow phức tạp.
-- Không làm Bedrock Knowledge Base hoặc RAG.
-- Không làm vector database.
-- Không làm RDS/Postgres migration.
-- Không làm mobile app.
-- Không làm custom domain.
-- Không làm multi-region failover.
-- Không làm NAT Gateway vì private subnets dùng VPC endpoints.
-- Không demo full CI/CD nếu không cần; GitHub Actions chỉ là bonus/supporting evidence.
-- Không dùng lại S3 buckets thủ công cũ. App demo chỉ dùng bucket được quản lý bởi CloudFormation.
+- KhĂ´ng lĂ m banking integration tháº­t.
+- KhĂ´ng dĂ¹ng dá»¯ liá»‡u tĂ i chĂ­nh tháº­t cá»§a ngÆ°á»i dĂ¹ng.
+- KhĂ´ng lĂ m Cognito signup/login.
+- KhĂ´ng lĂ m multi-user auth flow phá»©c táº¡p.
+- KhĂ´ng lĂ m Bedrock Knowledge Base hoáº·c RAG.
+- KhĂ´ng lĂ m vector database.
+- KhĂ´ng lĂ m RDS/Postgres migration.
+- KhĂ´ng lĂ m mobile app.
+- KhĂ´ng lĂ m custom domain.
+- KhĂ´ng lĂ m multi-region failover.
+- KhĂ´ng lĂ m NAT Gateway vĂ¬ private subnets dĂ¹ng VPC endpoints.
+- KhĂ´ng demo full CI/CD náº¿u khĂ´ng cáº§n; GitHub Actions chá»‰ lĂ  bonus/supporting evidence.
+- KhĂ´ng dĂ¹ng láº¡i S3 buckets thá»§ cĂ´ng cÅ©. App demo chá»‰ dĂ¹ng bucket Ä‘Æ°á»£c quáº£n lĂ½ bá»Ÿi CloudFormation.
 
-### Không nhấn mạnh trong presentation
+### KhĂ´ng nháº¥n máº¡nh trong presentation
 
-- Không giải thích quá sâu phần subnet route table nếu trainer không hỏi.
-- Không nói app là production banking app.
-- Không claim có authentication hoặc data privacy chuẩn ngân hàng.
-- Không claim DynamoDB nằm trong VPC. DynamoDB là AWS managed regional service, Lambda truy cập riêng qua Gateway Endpoint.
-- Không claim Bedrock nằm trong VPC. Bedrock Runtime là AWS managed service, Lambda truy cập qua Interface Endpoint.
-- Không claim Claude Haiku đang chạy nếu account chưa được approve. Demo hiện dùng Amazon Nova Micro qua Bedrock Runtime.
+- KhĂ´ng giáº£i thĂ­ch quĂ¡ sĂ¢u pháº§n subnet route table náº¿u trainer khĂ´ng há»i.
+- KhĂ´ng nĂ³i app lĂ  production banking app.
+- KhĂ´ng claim cĂ³ authentication hoáº·c data privacy chuáº©n ngĂ¢n hĂ ng.
+- KhĂ´ng claim DynamoDB náº±m trong VPC. DynamoDB lĂ  AWS managed regional service, Lambda truy cáº­p riĂªng qua Gateway Endpoint.
+- KhĂ´ng claim Bedrock náº±m trong VPC. Bedrock Runtime lĂ  AWS managed service, Lambda truy cáº­p qua Interface Endpoint.
+- KhĂ´ng claim Claude Haiku Ä‘ang cháº¡y náº¿u account chÆ°a Ä‘Æ°á»£c approve. Demo hiá»‡n dĂ¹ng Amazon Nova Micro qua Bedrock Runtime.
 
-## 3. Demo Path Cuối Cùng
+## 3. Demo Path Cuá»‘i CĂ¹ng
 
-Đây là luồng demo chính, nên đi đúng thứ tự để ít lỗi và dễ ghi điểm.
+ÄĂ¢y lĂ  luá»“ng demo chĂ­nh, nĂªn Ä‘i Ä‘Ăºng thá»© tá»± Ä‘á»ƒ Ă­t lá»—i vĂ  dá»… ghi Ä‘iá»ƒm.
 
 ### Path 1: User-facing demo
 
-1. Mở frontend public HTTPS URL:
+1. Má»Ÿ frontend public HTTPS URL:
 
    ```text
-   https://d104yk0i41rvg5.cloudfront.net
+   https://xxxxxxxxxxxx.cloudfront.net
    ```
 
-2. Upload file CSV mẫu:
+2. Upload file CSV máº«u:
 
    ```text
    sample_data/bank_statement_q2_2026.csv
    ```
 
-3. Xác nhận UI hiển thị upload success.
+3. XĂ¡c nháº­n UI hiá»ƒn thá»‹ upload success.
 
-4. Xác nhận transaction list có dữ liệu đã phân loại category.
+4. XĂ¡c nháº­n transaction list cĂ³ dá»¯ liá»‡u Ä‘Ă£ phĂ¢n loáº¡i category.
 
-5. Xác nhận summary theo category hiển thị được.
+5. XĂ¡c nháº­n summary theo category hiá»ƒn thá»‹ Ä‘Æ°á»£c.
 
-6. Mở Review queue để chứng minh low-confidence classifications có hàng chờ review.
+6. Má»Ÿ Review queue Ä‘á»ƒ chá»©ng minh low-confidence classifications cĂ³ hĂ ng chá» review.
 
-7. Refresh browser và mở lại transaction/summary để chứng minh dữ liệu được lưu trong DynamoDB, không chỉ nằm trong memory.
+7. Refresh browser vĂ  má»Ÿ láº¡i transaction/summary Ä‘á»ƒ chá»©ng minh dá»¯ liá»‡u Ä‘Æ°á»£c lÆ°u trong DynamoDB, khĂ´ng chá»‰ náº±m trong memory.
 
 ### Path 2: Backend/API proof
 
-1. Gọi health check:
+1. Gá»i health check:
 
    ```bash
-   curl https://mlhwir8gc5.execute-api.ap-southeast-1.amazonaws.com/health
+   curl https://xxxxxxxxxx.execute-api.ap-southeast-1.amazonaws.com/health
    ```
 
-2. Kết quả mong đợi:
+2. Káº¿t quáº£ mong Ä‘á»£i:
 
    ```json
    {
@@ -140,42 +140,43 @@ Những phần dưới đây không đưa vào demo chính để giữ demo gọ
    }
    ```
 
-3. Nếu cần chứng minh duplicate fix, upload cùng file hai lần với cùng `X-User-Id`, sau đó gọi `/transactions`. Kết quả đúng là vẫn `83` transaction, không tăng lên `166`.
+3. Náº¿u cáº§n chá»©ng minh duplicate fix, upload cĂ¹ng file hai láº§n vá»›i cĂ¹ng `X-User-Id`, sau Ä‘Ă³ gá»i `/transactions`. Káº¿t quáº£ Ä‘Ăºng lĂ  váº«n `83` transaction, khĂ´ng tÄƒng lĂªn `166`.
 
-4. Nếu cần chứng minh review queue:
+4. Náº¿u cáº§n chá»©ng minh review queue:
 
    ```bash
-   curl -H "X-User-Id: <demo-user>" https://mlhwir8gc5.execute-api.ap-southeast-1.amazonaws.com/review-queue
+   curl -H "X-User-Id: <demo-user>" https://xxxxxxxxxx.execute-api.ap-southeast-1.amazonaws.com/review-queue
    ```
 
 ### Path 3: AWS evidence proof
 
-1. Mở CloudFormation stack `team14-budgetbot-iac`.
-2. Show tab Resources để thấy S3, DynamoDB, Lambda, API Gateway, CloudFront, VPC endpoints.
-3. Show tab Outputs để lấy Frontend URL và API endpoint.
-4. Mở DynamoDB table `team14-budgetbot-cfn-transactions` để chứng minh transaction đã persist.
-5. Mở S3 raw bucket `team14-budgetbot-cfn-raw-325137989598-ap-southeast-1` để chứng minh CSV gốc đã được lưu.
-6. Mở CloudWatch Logs của Lambda để chứng minh Bedrock classification path chạy thật.
-7. Mở CloudWatch dashboard/alarm để chứng minh optional capability Full Observability.
-8. Mở Budget/SNS/Cost Anomaly Detection screenshot hoặc console nếu trainer hỏi về cost safety.
-9. Nếu trainer hỏi vì sao còn nhiều S3 buckets, trả lời: app chính dùng 2 bucket `team14-budgetbot-cfn-*`; bucket `team14-budgetbot-artifacts-*` phục vụ CI/CD artifact; bucket `cf-templates-*` do CloudFormation Console tự tạo khi upload template.
+1. Má»Ÿ CloudFormation stack `team14-budgetbot-iac`.
+2. Show tab Resources Ä‘á»ƒ tháº¥y S3, DynamoDB, Lambda, API Gateway, CloudFront, VPC endpoints.
+3. Show tab Outputs Ä‘á»ƒ láº¥y Frontend URL vĂ  API endpoint.
+4. Má»Ÿ DynamoDB table `team14-budgetbot-cfn-transactions` Ä‘á»ƒ chá»©ng minh transaction Ä‘Ă£ persist.
+5. Má»Ÿ S3 raw bucket `team14-budgetbot-cfn-raw-123456789012-ap-southeast-1` Ä‘á»ƒ chá»©ng minh CSV gá»‘c Ä‘Ă£ Ä‘Æ°á»£c lÆ°u.
+6. Má»Ÿ CloudWatch Logs cá»§a Lambda Ä‘á»ƒ chá»©ng minh Bedrock classification path cháº¡y tháº­t.
+7. Má»Ÿ CloudWatch dashboard/alarm Ä‘á»ƒ chá»©ng minh optional capability Full Observability.
+8. Má»Ÿ Budget/SNS/Cost Anomaly Detection screenshot hoáº·c console náº¿u trainer há»i vá» cost safety.
+9. Náº¿u trainer há»i vĂ¬ sao cĂ²n nhiá»u S3 buckets, tráº£ lá»i: app chĂ­nh dĂ¹ng 2 bucket `team14-budgetbot-cfn-*`; bucket `team14-budgetbot-artifacts-*` phá»¥c vá»¥ CI/CD artifact; bucket `cf-templates-*` do CloudFormation Console tá»± táº¡o khi upload template.
 
 ## 4. Final Scope Statement
 
-BudgetBot là một serverless AI Money Coach cho FinTech. Người dùng upload bank statement CSV qua CloudFront frontend, frontend gọi API Gateway, Lambda parse giao dịch, lưu CSV gốc vào S3, gọi Amazon Bedrock Runtime để phân loại giao dịch, ghi kết quả vào DynamoDB, và frontend đọc lại transactions/summary. Hệ thống được deploy bằng CloudFormation, chạy trong private Lambda subnets với VPC endpoints, dùng IAM least privilege, và có CloudWatch observability làm optional capability.
+BudgetBot lĂ  má»™t serverless AI Money Coach cho FinTech. NgÆ°á»i dĂ¹ng upload bank statement CSV qua CloudFront frontend, frontend gá»i API Gateway, Lambda parse giao dá»‹ch, lÆ°u CSV gá»‘c vĂ o S3, gá»i Amazon Bedrock Runtime Ä‘á»ƒ phĂ¢n loáº¡i giao dá»‹ch, ghi káº¿t quáº£ vĂ o DynamoDB, vĂ  frontend Ä‘á»c láº¡i transactions/summary. Há»‡ thá»‘ng Ä‘Æ°á»£c deploy báº±ng CloudFormation, cháº¡y trong private Lambda subnets vá»›i VPC endpoints, dĂ¹ng IAM least privilege, vĂ  cĂ³ CloudWatch observability lĂ m optional capability.
 
 ## 5. Presenter Checklist
 
-- [ ] Public URL mở được.
-- [ ] `/health` trả `status=ok`.
-- [ ] Upload CSV thành công.
-- [ ] Transactions hiển thị đúng category.
-- [ ] Summary hiển thị được.
-- [ ] Review queue load được qua UI hoặc `/review-queue`.
-- [ ] Upload lại cùng file không tạo duplicate.
-- [ ] CloudWatch logs có Bedrock classification evidence.
-- [ ] DynamoDB có transaction records.
-- [ ] S3 raw bucket có uploaded CSV.
-- [ ] S3 duplicate buckets cũ đã được xóa, chỉ còn bucket CloudFormation/artifact/template cần thiết.
-- [ ] CloudFormation outputs có Frontend URL và API endpoint.
-- [ ] Budget alert, SNS confirmation, Cost Anomaly Detection có screenshot/evidence.
+- [ ] Public URL má»Ÿ Ä‘Æ°á»£c.
+- [ ] `/health` tráº£ `status=ok`.
+- [ ] Upload CSV thĂ nh cĂ´ng.
+- [ ] Transactions hiá»ƒn thá»‹ Ä‘Ăºng category.
+- [ ] Summary hiá»ƒn thá»‹ Ä‘Æ°á»£c.
+- [ ] Review queue load Ä‘Æ°á»£c qua UI hoáº·c `/review-queue`.
+- [ ] Upload láº¡i cĂ¹ng file khĂ´ng táº¡o duplicate.
+- [ ] CloudWatch logs cĂ³ Bedrock classification evidence.
+- [ ] DynamoDB cĂ³ transaction records.
+- [ ] S3 raw bucket cĂ³ uploaded CSV.
+- [ ] S3 duplicate buckets cÅ© Ä‘Ă£ Ä‘Æ°á»£c xĂ³a, chá»‰ cĂ²n bucket CloudFormation/artifact/template cáº§n thiáº¿t.
+- [ ] CloudFormation outputs cĂ³ Frontend URL vĂ  API endpoint.
+- [ ] Budget alert, SNS confirmation, Cost Anomaly Detection cĂ³ screenshot/evidence.
+

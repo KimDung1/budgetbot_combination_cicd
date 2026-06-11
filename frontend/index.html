@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BudgetBot — AI Finance Dashboard</title>
+  <title>BudgetBot â€” AI Finance Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -33,7 +33,7 @@
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;font-size:14px;}
 
-    /* ── Sidebar ── */
+    /* â”€â”€ Sidebar â”€â”€ */
     .sidebar{width:240px;background:var(--sidebar);display:flex;flex-direction:column;flex-shrink:0;padding-bottom:1rem;}
     .brand{padding:1.25rem 1.25rem 0.75rem;display:flex;align-items:center;gap:0.6rem;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:0.5rem;}
     .brand-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:grid;place-items:center;color:white;font-size:1rem;}
@@ -50,7 +50,7 @@
     .nav-badge.green{background:var(--success);}
     .sidebar-footer{margin-top:auto;padding:0.75rem 1rem;border-top:1px solid rgba(255,255,255,.06);font-size:0.72rem;color:#4b5563;}
 
-    /* ── Main layout ── */
+    /* â”€â”€ Main layout â”€â”€ */
     .main-wrapper{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
     .topbar{height:60px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;gap:1rem;flex-shrink:0;}
     .topbar-left{display:flex;align-items:center;gap:1rem;}
@@ -68,12 +68,12 @@
     .btn-outline:hover{background:var(--bg-alt);}
     .btn-sm{padding:0.3rem 0.65rem;font-size:0.78rem;}
 
-    /* ── Content ── */
+    /* â”€â”€ Content â”€â”€ */
     .content{flex:1;overflow-y:auto;padding:1.5rem;}
     .section{display:none;}
     .section.active{display:block;}
 
-    /* ── Cards ── */
+    /* â”€â”€ Cards â”€â”€ */
     .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);}
     .card-body{padding:1.25rem;}
     .card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border);}
@@ -84,7 +84,7 @@
     .mb-4{margin-bottom:1rem;}
     .mb-6{margin-bottom:1.5rem;}
 
-    /* ── Stat tiles ── */
+    /* â”€â”€ Stat tiles â”€â”€ */
     .stat-tile{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:1.1rem 1.25rem;box-shadow:var(--shadow);}
     .stat-tile .label{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:0.4rem;}
     .stat-tile .value{font-size:1.6rem;font-weight:700;line-height:1;}
@@ -94,14 +94,14 @@
     .stat-tile.net{border-left:4px solid var(--info);}
     .stat-tile.blocked{border-left:4px solid var(--warn);}
 
-    /* ── Upload zone ── */
+    /* â”€â”€ Upload zone â”€â”€ */
     .upload-zone{border:2px dashed #d1d5db;border-radius:var(--radius);padding:2rem;text-align:center;cursor:pointer;transition:all .2s;background:white;margin-bottom:1.25rem;}
     .upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:#f5f3ff;}
     .upload-zone svg{width:40px;height:40px;color:#9ca3af;margin-bottom:0.75rem;}
     .upload-zone h3{font-size:0.9rem;font-weight:600;margin-bottom:0.25rem;}
     .upload-zone p{font-size:0.8rem;color:var(--muted);}
 
-    /* ── Tables ── */
+    /* â”€â”€ Tables â”€â”€ */
     .table-wrap{overflow-x:auto;}
     table{width:100%;border-collapse:collapse;text-align:left;}
     th{padding:0.7rem 1rem;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--bg-alt);border-bottom:1px solid var(--border);}
@@ -119,11 +119,11 @@
     .amt-pos{color:var(--success);font-weight:600;}
     .amt-neg{color:var(--error);font-weight:600;}
 
-    /* ── Pagination ── */
+    /* â”€â”€ Pagination â”€â”€ */
     .pagination{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border-top:1px solid var(--border);background:var(--bg-alt);}
     .pagination .info{font-size:0.78rem;color:var(--muted);}
 
-    /* ── Bar chart ── */
+    /* â”€â”€ Bar chart â”€â”€ */
     .bar-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;}
     .bar-row .cat{width:110px;font-size:0.8rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .bar-row .track{flex:1;height:10px;background:#f3f4f6;border-radius:5px;overflow:hidden;}
@@ -132,7 +132,7 @@
     .bar-row.income .fill{background:linear-gradient(90deg,#10b981,#34d399);}
     .bar-row .amt{width:85px;text-align:right;font-size:0.8rem;font-weight:600;}
 
-    /* ── Safety layers ── */
+    /* â”€â”€ Safety layers â”€â”€ */
     .safety-layer{border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:0.75rem;}
     .safety-layer-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;}
     .layer-badge{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;font-size:0.75rem;font-weight:700;flex-shrink:0;}
@@ -144,18 +144,18 @@
     .guard-chip{padding:0.2rem 0.6rem;border-radius:999px;font-size:0.72rem;font-weight:600;background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;}
     .layer1 .guard-chip{background:#fffbeb;color:#78350f;border-color:#fde68a;}
 
-    /* ── Toast ── */
+    /* â”€â”€ Toast â”€â”€ */
     #toast{position:fixed;bottom:1.5rem;right:1.5rem;padding:0.75rem 1.25rem;border-radius:var(--radius-sm);color:white;font-size:0.83rem;font-weight:500;box-shadow:var(--shadow-md);transform:translateY(150%);transition:transform .25s cubic-bezier(.4,0,.2,1);z-index:999;background:var(--text);}
     #toast.show{transform:translateY(0);}
     #toast.success{background:#065f46;}
     #toast.error{background:#991b1b;}
 
-    /* ── Spinner ── */
+    /* â”€â”€ Spinner â”€â”€ */
     .spinner{display:inline-block;width:1rem;height:1rem;border:2px solid rgba(0,0,0,.1);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
     .empty{padding:2.5rem;text-align:center;color:var(--muted);font-size:0.85rem;}
 
-    /* ── Misc ── */
+    /* â”€â”€ Misc â”€â”€ */
     .flex-between{display:flex;align-items:center;justify-content:space-between;gap:1rem;}
     .tag{display:inline-block;padding:.15rem .5rem;border-radius:999px;font-size:.7rem;font-weight:600;}
     .tag-red{background:#fee2e2;color:#991b1b;}
@@ -167,10 +167,10 @@
 </head>
 <body>
 
-<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <aside class="sidebar">
   <div class="brand">
-    <div class="brand-icon">💰</div>
+    <div class="brand-icon">đŸ’°</div>
     <div>
       <div class="brand-name">BudgetBot</div>
       <div class="brand-sub">AI Finance Dashboard</div>
@@ -207,10 +207,10 @@
     </button>
   </div>
 
-  <div class="sidebar-footer" id="backend-info">Connecting…</div>
+  <div class="sidebar-footer" id="backend-info">Connectingâ€¦</div>
 </aside>
 
-<!-- ═══════════════ MAIN ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MAIN â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="main-wrapper" id="report-content">
 
   <!-- Top Bar -->
@@ -220,18 +220,18 @@
     </div>
     <div class="topbar-right">
       <div class="month-filter">
-        <label>📅</label>
+        <label>đŸ“…</label>
         <input type="month" id="month" onchange="onMonthChange()">
-        <button class="clear-btn" id="month-clear" onclick="clearMonth()" style="display:none" title="Clear filter">✕</button>
+        <button class="clear-btn" id="month-clear" onclick="clearMonth()" style="display:none" title="Clear filter">âœ•</button>
       </div>
-      <button class="btn btn-outline btn-sm" onclick="exportPDF()">⬇ PDF</button>
+      <button class="btn btn-outline btn-sm" onclick="exportPDF()">â¬‡ PDF</button>
     </div>
   </header>
 
   <!-- Content -->
   <main class="content">
 
-    <!-- ── Upload (always visible on Overview) ── -->
+    <!-- â”€â”€ Upload (always visible on Overview) â”€â”€ -->
     <div id="sec-upload" class="section active mb-6">
       <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
         <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/></svg>
@@ -242,15 +242,15 @@
       <div id="upload-result"></div>
     </div>
 
-    <!-- ── Overview ── -->
+    <!-- â”€â”€ Overview â”€â”€ -->
     <div id="sec-dashboard" class="section active">
 
       <!-- Stat tiles -->
       <div class="grid-4 mb-6" id="stat-tiles">
-        <div class="stat-tile income"><div class="label">Cash Inflow</div><div class="value" id="tile-income">—</div><div class="sub" id="tile-income-sub">Income + Transfers</div></div>
-        <div class="stat-tile expense"><div class="label">Cash Outflow</div><div class="value" id="tile-expense">—</div><div class="sub">Total expenses</div></div>
-        <div class="stat-tile net"><div class="label">Net Balance</div><div class="value" id="tile-net">—</div><div class="sub" id="tile-net-sub">Inflow − Outflow</div></div>
-        <div class="stat-tile blocked"><div class="label">Threats Blocked</div><div class="value" id="tile-blocked">—</div><div class="sub">By AI Safety Guard</div></div>
+        <div class="stat-tile income"><div class="label">Cash Inflow</div><div class="value" id="tile-income">â€”</div><div class="sub" id="tile-income-sub">Income + Transfers</div></div>
+        <div class="stat-tile expense"><div class="label">Cash Outflow</div><div class="value" id="tile-expense">â€”</div><div class="sub">Total expenses</div></div>
+        <div class="stat-tile net"><div class="label">Net Balance</div><div class="value" id="tile-net">â€”</div><div class="sub" id="tile-net-sub">Inflow âˆ’ Outflow</div></div>
+        <div class="stat-tile blocked"><div class="label">Threats Blocked</div><div class="value" id="tile-blocked">â€”</div><div class="sub">By AI Safety Guard</div></div>
       </div>
 
       <!-- Charts row: two donuts -->
@@ -258,7 +258,7 @@
         <!-- Expenses donut -->
         <div class="card">
           <div class="card-header">
-            <span class="card-title">🔴 Expenses by Category</span>
+            <span class="card-title">đŸ”´ Expenses by Category</span>
             <span id="chart-period" style="font-size:0.75rem;color:var(--muted);">All time</span>
           </div>
           <div class="card-body" style="display:flex;align-items:center;gap:1.25rem;">
@@ -271,7 +271,7 @@
         <!-- Income donut -->
         <div class="card">
           <div class="card-header">
-            <span class="card-title">🟢 Cash Inflow by Category</span>
+            <span class="card-title">đŸŸ¢ Cash Inflow by Category</span>
             <span id="chart-period-inc" style="font-size:0.75rem;color:var(--muted);">All time</span>
           </div>
           <div class="card-body" style="display:flex;align-items:center;gap:1.25rem;">
@@ -295,7 +295,7 @@
       <div class="card">
         <div class="card-header">
           <span class="card-title">AI Insights</span>
-          <button class="btn btn-outline btn-sm" onclick="loadDashboard()">↻ Refresh</button>
+          <button class="btn btn-outline btn-sm" onclick="loadDashboard()">â†» Refresh</button>
         </div>
         <div class="card-body" id="insights-out">
           <div class="empty">Upload a CSV to see AI-generated insights.</div>
@@ -303,53 +303,53 @@
       </div>
     </div>
 
-    <!-- ── All Transactions ── -->
+    <!-- â”€â”€ All Transactions â”€â”€ -->
     <div id="sec-transactions" class="section">
       <div class="card">
         <div class="card-header flex-between">
           <span class="card-title">All Transactions</span>
           <div style="display:flex;gap:0.5rem;align-items:center;">
             <span id="txn-month-label" style="font-size:0.75rem;color:var(--muted);"></span>
-            <button class="btn btn-outline btn-sm" onclick="loadTxns()">↻ Refresh</button>
+            <button class="btn btn-outline btn-sm" onclick="loadTxns()">â†» Refresh</button>
           </div>
         </div>
         <div class="table-wrap">
-          <div id="txns-out"><div class="empty">No transactions yet — upload a CSV first.</div></div>
+          <div id="txns-out"><div class="empty">No transactions yet â€” upload a CSV first.</div></div>
         </div>
         <div class="pagination" id="txn-pagination" style="display:none;">
           <span class="info" id="txn-info"></span>
           <div style="display:flex;gap:0.5rem;">
-            <button class="btn btn-outline btn-sm" id="txn-prev" onclick="txnPrev()">◀ Prev</button>
-            <button class="btn btn-outline btn-sm" id="txn-next" onclick="txnNext()">Next ▶</button>
+            <button class="btn btn-outline btn-sm" id="txn-prev" onclick="txnPrev()">â—€ Prev</button>
+            <button class="btn btn-outline btn-sm" id="txn-next" onclick="txnNext()">Next â–¶</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ── Review Queue ── -->
+    <!-- â”€â”€ Review Queue â”€â”€ -->
     <div id="sec-review" class="section">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Review Queue <span style="font-size:0.75rem;color:var(--muted);font-weight:400;">— Low confidence classifications needing your review</span></span>
-          <button class="btn btn-outline btn-sm" onclick="loadReviewQueue()">↻ Refresh</button>
+          <span class="card-title">Review Queue <span style="font-size:0.75rem;color:var(--muted);font-weight:400;">â€” Low confidence classifications needing your review</span></span>
+          <button class="btn btn-outline btn-sm" onclick="loadReviewQueue()">â†» Refresh</button>
         </div>
         <div id="review-out"><div class="empty">No low-confidence items yet.</div></div>
       </div>
     </div>
 
-    <!-- ── AI Safety ── -->
+    <!-- â”€â”€ AI Safety â”€â”€ -->
     <div id="sec-safety" class="section">
       <div class="grid-2 mb-6">
 
         <!-- 2-layer explanation card -->
         <div class="card">
-          <div class="card-header"><span class="card-title">🛡️ 2-Layer Protection Architecture</span></div>
+          <div class="card-header"><span class="card-title">đŸ›¡ï¸ 2-Layer Protection Architecture</span></div>
           <div class="card-body">
             <div class="safety-layer layer1">
               <div class="safety-layer-header">
                 <div class="layer-badge">1</div>
                 <div>
-                  <h4>Layer 1 — Input Validation</h4>
+                  <h4>Layer 1 â€” Input Validation</h4>
                   <p>Runs first, before any AI processing.</p>
                 </div>
               </div>
@@ -366,11 +366,11 @@
               <div class="safety-layer-header">
                 <div class="layer-badge">2</div>
                 <div>
-                  <h4>Layer 2 — Threat Pattern Matching</h4>
+                  <h4>Layer 2 â€” Threat Pattern Matching</h4>
                   <p>Runs second, checks semantic patterns.</p>
                 </div>
               </div>
-              <p style="font-size:0.8rem;margin-bottom:0.5rem;">Scans text against a library of known attack patterns. Any match immediately blocks the input — AI model is never invoked.</p>
+              <p style="font-size:0.8rem;margin-bottom:0.5rem;">Scans text against a library of known attack patterns. Any match immediately blocks the input â€” AI model is never invoked.</p>
               <div class="guard-chips">
                 <span class="guard-chip">SQL Injection</span>
                 <span class="guard-chip">Command Injection</span>
@@ -380,7 +380,7 @@
             </div>
 
             <div style="margin-top:0.75rem;padding:0.75rem;background:#f0fdf4;border-radius:var(--radius-sm);font-size:0.8rem;border-left:3px solid var(--success);">
-              ✅ <strong>Result:</strong> Malicious inputs are stored in DB with <code>confidence=blocked</code> for audit. They are <strong>never sent to AWS Bedrock</strong>, protecting both security and cost.
+              âœ… <strong>Result:</strong> Malicious inputs are stored in DB with <code>confidence=blocked</code> for audit. They are <strong>never sent to AWS Bedrock</strong>, protecting both security and cost.
             </div>
           </div>
         </div>
@@ -388,11 +388,11 @@
         <!-- Live stats card -->
         <div class="card">
           <div class="card-header flex-between">
-            <span class="card-title">📊 Live Safety Stats</span>
-            <button class="btn btn-primary btn-sm" onclick="testSafety()">🧪 Run Safety Test</button>
+            <span class="card-title">đŸ“ Live Safety Stats</span>
+            <button class="btn btn-primary btn-sm" onclick="testSafety()">đŸ§ª Run Safety Test</button>
           </div>
           <div class="card-body">
-            <div id="safety-stats-out"><div class="empty">Loading…</div></div>
+            <div id="safety-stats-out"><div class="empty">Loadingâ€¦</div></div>
           </div>
           <div id="safety-test-out" style="padding:0 1.25rem 1.25rem;"></div>
         </div>
@@ -400,13 +400,13 @@
       </div>
     </div>
 
-    <!-- ── AI Performance ── -->
+    <!-- â”€â”€ AI Performance â”€â”€ -->
     <div id="sec-performance" class="section">
       <div class="grid-2">
         <div class="card">
           <div class="card-header flex-between">
             <span class="card-title">AI Accuracy</span>
-            <button class="btn btn-primary btn-sm" id="acc-btn" onclick="runAccuracy()">▶ Run test (40 txn)</button>
+            <button class="btn btn-primary btn-sm" id="acc-btn" onclick="runAccuracy()">â–¶ Run test (40 txn)</button>
           </div>
           <div class="card-body">
             <div id="stats-out"><div class="empty">Upload transactions to see live stats.</div></div>
@@ -428,10 +428,10 @@
 <div id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // CONFIG & UTILS
-// ══════════════════════════════════════════════
-const DEFAULT_API = 'https://mlhwir8gc5.execute-api.ap-southeast-1.amazonaws.com';
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const DEFAULT_API = 'https://YOUR_API_GATEWAY_URL.execute-api.ap-southeast-1.amazonaws.com';
 const API_BASE = (window.API_BASE || new URLSearchParams(location.search).get('api') || DEFAULT_API).replace(/\/$/, '');
 const USER_ID = new URLSearchParams(location.search).get('user') || 'test-user-001';
 const PAGE_SIZE = 30;
@@ -466,9 +466,9 @@ async function call(path, opts={}) {
   }
 }
 
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // TABS
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const TITLES = { dashboard:'Overview', transactions:'All Transactions', review:'Review Queue', safety:'AI Safety Guard', performance:'AI Performance' };
 
 function switchTab(tabId, e) {
@@ -493,9 +493,9 @@ function switchTab(tabId, e) {
   if (tabId === 'performance') loadStats();
 }
 
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // MONTH FILTER
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function getMonth() { return $('month').value || ''; }
 
 function onMonthChange() {
@@ -521,9 +521,9 @@ function formatMonth(v) {
   return new Date(y, m-1).toLocaleDateString('en-US', {month:'long', year:'numeric'});
 }
 
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // UPLOAD
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const dz = $('drop-zone');
 dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
 dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
@@ -532,30 +532,30 @@ dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag
 function handleFile(e) { if (e.target.files[0]) doUpload(e.target.files[0]); }
 
 async function doUpload(file) {
-  $('upload-result').innerHTML = `<p style="padding:.6rem 0;color:var(--muted);"><span class="spinner"></span> Uploading & categorizing <strong>${file.name}</strong>…</p>`;
+  $('upload-result').innerHTML = `<p style="padding:.6rem 0;color:var(--muted);"><span class="spinner"></span> Uploading & categorizing <strong>${file.name}</strong>â€¦</p>`;
   const fd = new FormData(); fd.append('file', file);
   const res = await call('/upload', {method:'POST', body:fd});
   if (!res.ok) {
     toast(res.body.detail || 'Upload failed', 'error');
-    $('upload-result').innerHTML = `<p style="color:var(--error);padding:.5rem 0;">❌ ${res.body.detail || 'Upload failed'}</p>`;
+    $('upload-result').innerHTML = `<p style="color:var(--error);padding:.5rem 0;">âŒ ${res.body.detail || 'Upload failed'}</p>`;
     return;
   }
   const b = res.body;
   $('upload-result').innerHTML = `
     <div style="padding:.75rem 1rem;background:#f0fdf4;border-radius:var(--radius-sm);border-left:3px solid var(--success);margin-top:.75rem;font-size:.82rem;">
-      ✅ <strong>${b.filename}</strong> — <strong>${b.rows_inserted}</strong> of ${b.rows_parsed} rows categorized.
-      ${b.low_confidence_count ? `<span style="color:var(--warn)"> · ${b.low_confidence_count} sent to Review Queue</span>` : ''}
-      ${b.safety_blocked ? `<span style="color:var(--error)"> · 🛡️ ${b.safety_blocked} threat(s) blocked</span>` : ''}
+      âœ… <strong>${b.filename}</strong> â€” <strong>${b.rows_inserted}</strong> of ${b.rows_parsed} rows categorized.
+      ${b.low_confidence_count ? `<span style="color:var(--warn)"> Â· ${b.low_confidence_count} sent to Review Queue</span>` : ''}
+      ${b.safety_blocked ? `<span style="color:var(--error)"> Â· đŸ›¡ï¸ ${b.safety_blocked} threat(s) blocked</span>` : ''}
     </div>`;
-  toast(`✅ ${b.rows_inserted} transactions categorized`, 'success');
+  toast(`âœ… ${b.rows_inserted} transactions categorized`, 'success');
   loadDashboard();
   loadSafetyStats();
   updateNavBadges();
 }
 
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // DASHBOARD / OVERVIEW
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const _charts = {};
 const CHART_COLORS = ['#6366f1','#ec4899','#f59e0b','#10b981','#3b82f6','#ef4444','#8b5cf6','#14b8a6','#f97316','#06b6d4'];
 
@@ -597,7 +597,7 @@ async function loadDashboard() {
     $('bar-chart-out').innerHTML = '<div class="empty" style="padding:1rem;">No data yet.</div>';
     $('insights-out').innerHTML = '<div class="empty">Upload a CSV to see AI-generated insights.</div>';
     // Reset tiles
-    ['tile-income','tile-expense','tile-net','tile-blocked'].forEach(id => $(id).textContent = '—');
+    ['tile-income','tile-expense','tile-net','tile-blocked'].forEach(id => $(id).textContent = 'â€”');
     return;
   }
 
@@ -606,7 +606,7 @@ async function loadDashboard() {
   const expense = Object.entries(by_category).filter(([,v]) => v.total < 0).reduce((s,[,v]) => s+Math.abs(v.total), 0);
   const net = income - expense;
 
-  // Tiles — separate true income from transfers
+  // Tiles â€” separate true income from transfers
   const realIncome = Object.entries(by_category).filter(([k,v]) => v.total > 0 && k.toLowerCase() !== 'transfer').reduce((s,[,v]) => s+v.total, 0);
   const transfers = Object.entries(by_category).filter(([k,v]) => v.total > 0 && k.toLowerCase() === 'transfer').reduce((s,[,v]) => s+v.total, 0);
   $('tile-income').textContent = '+' + fmtC(income);
@@ -620,7 +620,7 @@ async function loadDashboard() {
   $('tile-expense').style.color = 'var(--error)';
   $('tile-net').textContent = (net >= 0 ? '+' : '') + fmtC(net);
   $('tile-net').style.color = net >= 0 ? 'var(--success)' : 'var(--error)';
-  $('tile-net-sub').textContent = `${fmtC(income)} in − ${fmtC(expense)} out`;
+  $('tile-net-sub').textContent = `${fmtC(income)} in âˆ’ ${fmtC(expense)} out`;
 
   // Expense donut
   const expCats = Object.entries(by_category).filter(([,v]) => v.total < 0).sort((a,b) => a[1].total - b[1].total);
@@ -662,18 +662,18 @@ async function loadDashboard() {
           <div style="font-size:.72rem;color:var(--muted);">${v.count} transaction(s)</div>
         </div>`).join('')}
     </div>
-    ${top_3_drivers && top_3_drivers.length ? `<p style="margin-top:.75rem;font-size:.8rem;color:var(--muted);">🎯 Biggest drivers: ${top_3_drivers.map(d=>`<strong>${d.category}</strong> (${fmtC(d.total)})`).join(', ')}</p>` : ''}`;
+    ${top_3_drivers && top_3_drivers.length ? `<p style="margin-top:.75rem;font-size:.8rem;color:var(--muted);">đŸ¯ Biggest drivers: ${top_3_drivers.map(d=>`<strong>${d.category}</strong> (${fmtC(d.total)})`).join(', ')}</p>` : ''}`;
 }
 
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // ALL TRANSACTIONS
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let allTxns = [], txnPage = 0;
 
 async function loadTxns() {
   const m = getMonth();
   $('txn-month-label').textContent = m ? formatMonth(m) : 'All time';
-  $('txns-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loading…</div>';
+  $('txns-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loadingâ€¦</div>';
   const url = '/transactions' + (m ? '?month='+encodeURIComponent(m) : '');
   const res = await call(url);
   if (!res.ok || !res.body.transactions?.length) {
@@ -700,7 +700,7 @@ function renderTxns() {
       const blocked = r.confidence === 'blocked';
       return `<tr class="${blocked?'blocked-row':''}">
         <td style="white-space:nowrap;">${r.date}</td>
-        <td>${blocked ? `<span style="color:var(--error)">🚫</span> ` : ''}${(r.description||'').slice(0,55)}</td>
+        <td>${blocked ? `<span style="color:var(--error)">đŸ«</span> ` : ''}${(r.description||'').slice(0,55)}</td>
         <td>${blocked ? '<span class="tag tag-red">BLOCKED</span>' : `<span class="cat-pill">${r.category}</span>`}</td>
         <td style="text-align:right;" class="${r.amount>=0?'amt-pos':'amt-neg'}">${r.amount>=0?'+':''}${fmt(r.amount)}</td>
       </tr>`;
@@ -709,7 +709,7 @@ function renderTxns() {
 
   if (total > PAGE_SIZE) {
     $('txn-pagination').style.display = 'flex';
-    $('txn-info').textContent = `Showing ${start+1}–${end} of ${total} transactions`;
+    $('txn-info').textContent = `Showing ${start+1}â€“${end} of ${total} transactions`;
     $('txn-prev').disabled = txnPage === 0;
     $('txn-next').disabled = txnPage >= pages - 1;
   } else {
@@ -720,14 +720,14 @@ function renderTxns() {
 function txnPrev() { if (txnPage > 0) { txnPage--; renderTxns(); } }
 function txnNext() { if ((txnPage+1)*PAGE_SIZE < allTxns.length) { txnPage++; renderTxns(); } }
 
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // REVIEW QUEUE
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function loadReviewQueue() {
-  $('review-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loading…</div>';
+  $('review-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loadingâ€¦</div>';
   const res = await call('/review-queue');
   if (!res.ok || !res.body.items?.length) {
-    $('review-out').innerHTML = '<div class="empty">✅ No low-confidence items — AI is performing well!</div>';
+    $('review-out').innerHTML = '<div class="empty">âœ… No low-confidence items â€” AI is performing well!</div>';
     updateNavBadge('review-badge', 0);
     return;
   }
@@ -745,7 +745,7 @@ async function loadReviewQueue() {
           ${cats.map(c=>`<option value="${c}" ${c===r.category?'selected':''}>${c}</option>`).join('')}
         </select></td>
         <td style="text-align:right;" class="${r.amount>=0?'amt-pos':'amt-neg'}">${r.amount>=0?'+':''}${fmt(r.amount)}</td>
-        <td><button class="btn btn-primary btn-sm" onclick="correctTxn(${i},'${(r.sk||'').replace(/'/g,"\\'")}')">✓ Correct</button></td>
+        <td><button class="btn btn-primary btn-sm" onclick="correctTxn(${i},'${(r.sk||'').replace(/'/g,"\\'")}')">âœ“ Correct</button></td>
       </tr>`).join('')}</tbody>
   </table>
   ${items.length > 20 ? `<div style="padding:.75rem 1rem;font-size:.78rem;color:var(--muted);">Showing 20 of ${items.length}</div>` : ''}`;
@@ -754,23 +754,23 @@ async function loadReviewQueue() {
 async function correctTxn(idx, sk) {
   const sel = $('review-cat-'+idx);
   const btn = sel.closest('tr').querySelector('button');
-  btn.disabled = true; btn.textContent = '⏳';
+  btn.disabled = true; btn.textContent = 'â³';
   const res = await call('/correct', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sk,new_category:sel.value})});
   if (res.ok && res.body.corrected) {
     $('review-row-'+idx).style.background = '#f0fdf4';
-    btn.textContent = '✓ Done'; btn.style.background = 'var(--success)';
-    toast(`Corrected → ${sel.value}`, 'success');
+    btn.textContent = 'âœ“ Done'; btn.style.background = 'var(--success)';
+    toast(`Corrected â†’ ${sel.value}`, 'success');
   } else {
-    btn.disabled = false; btn.textContent = '✓ Correct';
+    btn.disabled = false; btn.textContent = 'âœ“ Correct';
     toast(res.body.error || 'Correction failed', 'error');
   }
 }
 
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // AI SAFETY
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function loadSafetyStats() {
-  $('safety-stats-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loading…</div>';
+  $('safety-stats-out').innerHTML = '<div class="empty"><span class="spinner"></span> Loadingâ€¦</div>';
   const res = await call('/stats');
   if (!res.ok || !res.body.total) {
     $('safety-stats-out').innerHTML = '<div class="empty">Upload transactions to see safety stats.</div>';
@@ -780,14 +780,14 @@ async function loadSafetyStats() {
   const s = res.body;
   const blocked = s.blocked_count || 0;
   const items = s.blocked_items || [];
-  $('tile-blocked').textContent = blocked > 0 ? '🚫 '+blocked : '0';
+  $('tile-blocked').textContent = blocked > 0 ? 'đŸ« '+blocked : '0';
 
   updateNavBadge('safety-badge', blocked);
 
   $('safety-stats-out').innerHTML = `
     <div style="display:flex;gap:1rem;margin-bottom:1rem;">
       <div style="text-align:center;padding:.75rem 1.25rem;background:${blocked>0?'#fef2f2':'#f0fdf4'};border-radius:var(--radius-sm);border:2px solid ${blocked>0?'var(--error)':'var(--success)'};">
-        <div style="font-size:1.8rem;font-weight:800;color:${blocked>0?'var(--error)':'var(--success)'};">${blocked>0?'🚫 '+blocked:'✅ 0'}</div>
+        <div style="font-size:1.8rem;font-weight:800;color:${blocked>0?'var(--error)':'var(--success)'};">${blocked>0?'đŸ« '+blocked:'âœ… 0'}</div>
         <div style="font-size:.72rem;color:var(--muted);">Threats Blocked</div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;justify-content:center;font-size:.82rem;">
@@ -803,10 +803,10 @@ async function loadSafetyStats() {
         <tr style="background:#fef2f2;">
           <td>${t.date}</td>
           <td><code>${(t.description||'').slice(0,50)}</code></td>
-          <td><span class="tag tag-red">🚫 BLOCKED</span></td>
+          <td><span class="tag tag-red">đŸ« BLOCKED</span></td>
         </tr>`).join('')}
       </tbody>
-    </table>` : '<div style="color:var(--success);font-size:.82rem;">✅ No blocked transactions recorded yet.</div>'}`;
+    </table>` : '<div style="color:var(--success);font-size:.82rem;">âœ… No blocked transactions recorded yet.</div>'}`;
 }
 
 const SAFETY_CSV = `date,description,amount
@@ -820,7 +820,7 @@ const SAFETY_CSV = `date,description,amount
 2026-05-28,{{constructor.constructor('return this')()}},-77000`;
 
 async function testSafety() {
-  $('safety-test-out').innerHTML = '<div class="empty"><span class="spinner"></span> Uploading safety test CSV…</div>';
+  $('safety-test-out').innerHTML = '<div class="empty"><span class="spinner"></span> Uploading safety test CSVâ€¦</div>';
   const blob = new Blob([SAFETY_CSV], {type:'text/csv'});
   const fd = new FormData(); fd.append('file', blob, 'safety_test.csv');
   const res = await call('/upload', {method:'POST', body:fd});
@@ -831,14 +831,14 @@ async function testSafety() {
   const safe = total - blocked;
   $('safety-test-out').innerHTML = `
     <div style="margin-top:.5rem;padding:.75rem;background:#f9fafb;border-radius:var(--radius-sm);border:1px solid var(--border);">
-      <div style="font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:.5rem;">🧪 TEST RESULT: ${total} inputs scanned</div>
+      <div style="font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:.5rem;">đŸ§ª TEST RESULT: ${total} inputs scanned</div>
       <div style="display:flex;gap:.75rem;margin-bottom:.75rem;">
         <div style="padding:.5rem .9rem;background:#fef2f2;border-radius:var(--radius-sm);border:2px solid var(--error);text-align:center;">
-          <div style="font-size:1.2rem;font-weight:800;color:var(--error);">🚫 ${blocked}</div>
+          <div style="font-size:1.2rem;font-weight:800;color:var(--error);">đŸ« ${blocked}</div>
           <div style="font-size:.68rem;color:var(--muted);">Blocked</div>
         </div>
         <div style="padding:.5rem .9rem;background:#f0fdf4;border-radius:var(--radius-sm);border:2px solid var(--success);text-align:center;">
-          <div style="font-size:1.2rem;font-weight:800;color:var(--success);">✅ ${safe}</div>
+          <div style="font-size:1.2rem;font-weight:800;color:var(--success);">âœ… ${safe}</div>
           <div style="font-size:.68rem;color:var(--muted);">Safe</div>
         </div>
       </div>
@@ -847,9 +847,9 @@ async function testSafety() {
   loadSafetyStats();
 }
 
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // AI PERFORMANCE
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function loadStats() {
   const res = await call('/stats');
   if (!res.ok || !res.body.total) {
@@ -879,10 +879,10 @@ async function loadStats() {
 
 async function runAccuracy() {
   const btn = $('acc-btn');
-  btn.disabled = true; btn.textContent = '⏳ Testing…';
-  $('accuracy-out').innerHTML = '<div class="empty"><span class="spinner"></span> Running 40-transaction accuracy test…</div>';
+  btn.disabled = true; btn.textContent = 'â³ Testingâ€¦';
+  $('accuracy-out').innerHTML = '<div class="empty"><span class="spinner"></span> Running 40-transaction accuracy testâ€¦</div>';
   const res = await call('/accuracy');
-  btn.disabled = false; btn.textContent = '▶ Run test (40 txn)';
+  btn.disabled = false; btn.textContent = 'â–¶ Run test (40 txn)';
   if (!res.ok || !res.body.total) { $('accuracy-out').innerHTML = '<div class="empty" style="color:var(--error);">Test failed.</div>'; return; }
   const d = res.body;
   const col = d.accuracy >= 90 ? 'var(--success)' : d.accuracy >= 70 ? 'var(--warn)' : 'var(--error)';
@@ -913,25 +913,25 @@ async function runAccuracy() {
   if (d.errors.length) {
     $('failures-out').innerHTML = `
       <div style="margin-bottom:.75rem;font-size:.8rem;padding:.5rem .75rem;background:#fef2f2;border-radius:var(--radius-sm);">
-        <strong>${d.errors.length} failure case(s)</strong> from ${d.total} tests · Accuracy: <strong>${d.accuracy}%</strong>
+        <strong>${d.errors.length} failure case(s)</strong> from ${d.total} tests Â· Accuracy: <strong>${d.accuracy}%</strong>
       </div>
       ${d.errors.map((e,i)=>`
         <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:.6rem;border-left:3px solid var(--error);">
           <div style="font-size:.83rem;font-weight:600;margin-bottom:.4rem;">Case ${i+1}: ${e.description}</div>
           <div style="font-size:.78rem;display:flex;gap:1rem;flex-wrap:wrap;">
             <span>AI: <span class="tag tag-red">${e.predicted}</span></span>
-            <span>→ Human: <span class="tag tag-green">${e.human}</span></span>
-            <span style="color:var(--muted);">Fix: ${e.confidence==='low'?'Low confidence → Review Queue → user corrects':'Improve AI prompt or add keyword'}</span>
+            <span>â†’ Human: <span class="tag tag-green">${e.human}</span></span>
+            <span style="color:var(--muted);">Fix: ${e.confidence==='low'?'Low confidence â†’ Review Queue â†’ user corrects':'Improve AI prompt or add keyword'}</span>
           </div>
         </div>`).join('')}`;
   } else {
-    $('failures-out').innerHTML = '<div style="padding:1rem;background:#f0fdf4;border-radius:var(--radius-sm);color:#065f46;font-weight:600;">✅ Perfect accuracy — no failures!</div>';
+    $('failures-out').innerHTML = '<div style="padding:1rem;background:#f0fdf4;border-radius:var(--radius-sm);color:#065f46;font-weight:600;">âœ… Perfect accuracy â€” no failures!</div>';
   }
 }
 
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // NAV BADGES
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function updateNavBadge(id, count) {
   const el = $(id);
   if (count > 0) { el.style.display = 'inline'; el.textContent = count; }
@@ -949,9 +949,9 @@ async function updateNavBadges() {
   }
 }
 
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // PDF EXPORT
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function exportPDF() {
   const el = document.getElementById('report-content');
   html2pdf().set({
@@ -962,16 +962,16 @@ function exportPDF() {
   }).from(el).save();
 }
 
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // INIT
-// ══════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function init() {
   const res = await call('/health');
   if (res.ok) {
     const b = res.body.backends || {};
-    $('backend-info').textContent = `ai:${b.ai} · db:${b.userstore}`;
+    $('backend-info').textContent = `ai:${b.ai} Â· db:${b.userstore}`;
   } else {
-    $('backend-info').textContent = '⚠ Backend offline';
+    $('backend-info').textContent = 'â  Backend offline';
     $('backend-info').style.color = 'var(--error)';
   }
   loadDashboard();
@@ -982,3 +982,4 @@ init();
 </script>
 </body>
 </html>
+
